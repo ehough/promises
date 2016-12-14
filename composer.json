@@ -9,10 +9,15 @@
             "name": "Michael Dowling",
             "email": "mtdowling@gmail.com",
             "homepage": "https://github.com/mtdowling"
+        },
+        {
+            "name": "Eric Hough",
+            "email": "eric@tubepress.com",
+            "homepage": "https://github.com/ehough"
         }
     ],
     "require": {
-        "php": ">=5.5.0"
+        "php": ">=5.3.29"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0"
