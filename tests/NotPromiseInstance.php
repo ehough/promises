@@ -13,12 +13,12 @@ class NotPromiseInstance extends Thennable implements PromiseInterface
         $this->nextPromise = new Promise();
     }
 
-    public function then(callable $res = null, callable $rej = null)
+    public function then($res = null, $rej = null)
     {
         return $this->nextPromise->then($res, $rej);
     }
 
-    public function otherwise(callable $onRejected)
+    public function otherwise($onRejected)
     {
         return $this->then($onRejected);
     }

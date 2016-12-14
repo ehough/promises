@@ -16,7 +16,7 @@ interface TaskQueueInterface
      *
      * @param callable $task
      */
-    public function add(callable $task);
+    public function add($task);
 
     /**
      * Execute all of the pending task in the queue.

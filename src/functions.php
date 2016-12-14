@@ -39,7 +39,7 @@ function queue(TaskQueueInterface $assign = null)
  *
  * @return PromiseInterface
  */
-function task(callable $task)
+function task($task)
 {
     $queue = queue();
     $promise = new Promise([$queue, 'run']);
@@ -345,8 +345,8 @@ function settle($promises)
  */
 function each(
     $iterable,
-    callable $onFulfilled = null,
-    callable $onRejected = null
+    $onFulfilled = null,
+    $onRejected = null
 ) {
     return (new EachPromise($iterable, [
         'fulfilled' => $onFulfilled,
@@ -372,8 +372,8 @@ function each(
 function each_limit(
     $iterable,
     $concurrency,
-    callable $onFulfilled = null,
-    callable $onRejected = null
+    $onFulfilled = null,
+    $onRejected = null
 ) {
     return (new EachPromise($iterable, [
         'fulfilled'   => $onFulfilled,
@@ -396,7 +396,7 @@ function each_limit(
 function each_limit_all(
     $iterable,
     $concurrency,
-    callable $onFulfilled = null
+    $onFulfilled = null
 ) {
     return each_limit(
         $iterable,
@@ -451,7 +451,7 @@ function is_settled(PromiseInterface $promise)
  *
  * @return PromiseInterface
  */
-function coroutine(callable $generatorFn)
+function coroutine($generatorFn)
 {
     return new Coroutine($generatorFn);
 }

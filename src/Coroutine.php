@@ -57,7 +57,7 @@ final class Coroutine implements PromiseInterface
      */
     private $result;
 
-    public function __construct(callable $generatorFn)
+    public function __construct($generatorFn)
     {
         $this->generator = $generatorFn();
         $this->result = new Promise(function () {
@@ -69,13 +69,13 @@ final class Coroutine implements PromiseInterface
     }
 
     public function then(
-        callable $onFulfilled = null,
-        callable $onRejected = null
+        $onFulfilled = null,
+        $onRejected = null
     ) {
         return $this->result->then($onFulfilled, $onRejected);
     }
 
-    public function otherwise(callable $onRejected)
+    public function otherwise($onRejected)
     {
         return $this->result->otherwise($onRejected);
     }
