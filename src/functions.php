@@ -313,10 +313,10 @@ function settle($promises)
     return each(
         $promises,
         function ($value, $idx) use (&$results) {
-            $results[$idx] = ['state' => PromiseInterface::FULFILLED, 'value' => $value];
+            $results[$idx] = array('state' => PromiseInterface::FULFILLED, 'value' => $value);
         },
         function ($reason, $idx) use (&$results) {
-            $results[$idx] = ['state' => PromiseInterface::REJECTED, 'reason' => $reason];
+            $results[$idx] = array('state' => PromiseInterface::REJECTED, 'reason' => $reason);
         }
     )->then(function () use (&$results) {
         ksort($results);
@@ -348,10 +348,12 @@ function each(
     $onFulfilled = null,
     $onRejected = null
 ) {
-    return (new EachPromise($iterable, array(
+    $eachPromise = new EachPromise($iterable, array(
         'fulfilled' => $onFulfilled,
         'rejected'  => $onRejected
-    )))->promise();
+    ));
+
+    return $eachPromise->promise();
 }
 
 /**
@@ -375,11 +377,13 @@ function each_limit(
     $onFulfilled = null,
     $onRejected = null
 ) {
-    return (new EachPromise($iterable, array(
+    $eachPromise = new EachPromise($iterable, array(
         'fulfilled'   => $onFulfilled,
         'rejected'    => $onRejected,
         'concurrency' => $concurrency
-    )))->promise();
+    ));
+
+    return $eachPromise->promise();
 }
 
 /**

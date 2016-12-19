@@ -227,10 +227,7 @@ class EachPromiseTest extends \PHPUnit_Framework_TestCase
 
     public function testRejectsAggregateWhenNextThrows()
     {
-        $iter = function () {
-            yield 'a';
-            throw new \Exception('Failure');
-        };
+        $iter = new EachPromiseTestGenerator1();
         $each = new EachPromise($iter());
         $p = $each->promise();
         $e = null;
