@@ -7,7 +7,7 @@ namespace GuzzleHttp\Promise;
  */
 class EachPromise implements PromisorInterface
 {
-    private $pending = [];
+    private $pending = array();
 
     /** @var \Iterator */
     private $iterable;
@@ -48,7 +48,7 @@ class EachPromise implements PromisorInterface
      * @param mixed    $iterable Promises or values to iterate.
      * @param array    $config   Configuration options
      */
-    public function __construct($iterable, array $config = [])
+    public function __construct($iterable, array $config = array())
     {
         $this->iterable = iter_for($iterable);
 
@@ -87,29 +87,10 @@ class EachPromise implements PromisorInterface
     private function createPromise()
     {
         $this->mutex = false;
-        $this->aggregate = new Promise(function () {
-            reset($this->pending);
-            if (empty($this->pending) && !$this->iterable->valid()) {
-                $this->aggregate->resolve(null);
-                return;
-            }
-
-            // Consume a potentially fluctuating list of promises while
-            // ensuring that indexes are maintained (precluding array_shift).
-            while ($promise = current($this->pending)) {
-                next($this->pending);
-                $promise->wait();
-                if ($this->aggregate->getState() !== PromiseInterface::PENDING) {
-                    return;
-                }
-            }
-        });
+        $this->aggregate = new Promise(array($this, '__closureConsumePromises'));
 
         // Clear the references when the promise is resolved.
-        $clearFn = function () {
-            $this->iterable = $this->concurrency = $this->pending = null;
-            $this->onFulfilled = $this->onRejected = null;
-        };
+        $clearFn = array($this, '__closureClearReferences');
 
         $this->aggregate->then($clearFn, $clearFn);
     }
@@ -225,5 +206,30 @@ class EachPromise implements PromisorInterface
         }
 
         return false;
+    }
+    
+    public function __closureConsumePromises()
+    {
+        reset($this->pending);
+        if (empty($this->pending) && !$this->iterable->valid()) {
+            $this->aggregate->resolve(null);
+            return;
+        }
+
+        // Consume a potentially fluctuating list of promises while
+        // ensuring that indexes are maintained (precluding array_shift).
+        while ($promise = current($this->pending)) {
+            next($this->pending);
+            $promise->wait();
+            if ($this->aggregate->getState() !== PromiseInterface::PENDING) {
+                return;
+            }
+        }
+    }
+    
+    public function __closureClearReferences()
+    {
+        $this->iterable = $this->concurrency = $this->pending = null;
+        $this->onFulfilled = $this->onRejected = null;
     }
 }

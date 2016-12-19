@@ -2,7 +2,6 @@
 namespace GuzzleHttp\Promise\Tests;
 
 use GuzzleHttp\Promise\Coroutine;
-use GuzzleHttp\Promise\PromiseInterface;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -14,39 +13,40 @@ class CoroutineTest extends PHPUnit_Framework_TestCase
      * @param string $method
      * @param array $args
      */
-    public function testShouldProxyPromiseMethodsToResultPromise($method, $args = [])
+    public function testShouldProxyPromiseMethodsToResultPromise($method, $args = array())
     {
-        $coroutine = new Coroutine(function () { yield 0; });
-        $mockPromise = $this->getMockForAbstractClass(PromiseInterface::class);
-        call_user_func_array([$mockPromise->expects($this->once())->method($method), 'with'], $args);
+        $coroutine = new Coroutine(function () { return new ArrayGenerator(array(0)); });
+        $mockPromise = $this->getMockForAbstractClass('\GuzzleHttp\Promise\PromiseInterface');
+        call_user_func_array(array($mockPromise->expects($this->once())->method($method), 'with'), $args);
 
-        $resultPromiseProp = (new ReflectionClass(Coroutine::class))->getProperty('result');
+        $ref = new ReflectionClass('\GuzzleHttp\Promise\Coroutine');
+        $resultPromiseProp = $ref->getProperty('result');
         $resultPromiseProp->setAccessible(true);
         $resultPromiseProp->setValue($coroutine, $mockPromise);
 
-        call_user_func_array([$coroutine, $method], $args);
+        call_user_func_array(array($coroutine, $method), $args);
     }
 
     public function promiseInterfaceMethodProvider()
     {
-        return [
-            ['then', [null, null]],
-            ['otherwise', [function () {}]],
-            ['wait', [true]],
-            ['getState', []],
-            ['resolve', [null]],
-            ['reject', [null]],
-        ];
+        return array(
+            array('then', array(null, null)),
+            array('otherwise', array(function () {})),
+            array('wait', array(true)),
+            array('getState', array()),
+            array('resolve', array(null)),
+            array('reject', array(null)),
+        );
     }
 
     public function testShouldCancelResultPromiseAndOutsideCurrentPromise()
     {
-        $coroutine = new Coroutine(function () { yield 0; });
+        $coroutine = new Coroutine(function () { return new ArrayGenerator(array(0)); });
 
-        $mockPromises = [
-            'result' => $this->getMockForAbstractClass(PromiseInterface::class),
-            'currentPromise' => $this->getMockForAbstractClass(PromiseInterface::class),
-        ];
+        $mockPromises = array(
+            'result' => $this->getMockForAbstractClass('\GuzzleHttp\Promise\PromiseInterface'),
+            'currentPromise' => $this->getMockForAbstractClass('\GuzzleHttp\Promise\PromiseInterface'),
+        );
         foreach ($mockPromises as $propName => $mockPromise) {
             /**
              * @var $mockPromise \PHPUnit_Framework_MockObject_MockObject
@@ -55,7 +55,8 @@ class CoroutineTest extends PHPUnit_Framework_TestCase
                 ->method('cancel')
                 ->with();
 
-            $promiseProp = (new ReflectionClass(Coroutine::class))->getProperty($propName);
+            $ref = new ReflectionClass('\GuzzleHttp\Promise\Coroutine');
+            $promiseProp = $ref->getProperty($propName);
             $promiseProp->setAccessible(true);
             $promiseProp->setValue($coroutine, $mockPromise);
         }

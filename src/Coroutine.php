@@ -60,12 +60,15 @@ final class Coroutine implements PromiseInterface
     public function __construct($generatorFn)
     {
         $this->generator = $generatorFn();
-        $this->result = new Promise(function () {
-            while (isset($this->currentPromise)) {
-                $this->currentPromise->wait();
-            }
-        });
+        $this->result = new Promise(array($this, '__closureWaitForCurrentPromise'));
         $this->nextCoroutine($this->generator->current());
+    }
+
+    public function __closureWaitForCurrentPromise()
+    {
+        while (isset($this->currentPromise)) {
+            $this->currentPromise->wait();
+        }
     }
 
     public function then(
@@ -109,7 +112,7 @@ final class Coroutine implements PromiseInterface
     private function nextCoroutine($yielded)
     {
         $this->currentPromise = promise_for($yielded)
-            ->then([$this, '_handleSuccess'], [$this, '_handleFailure']);
+            ->then(array($this, '_handleSuccess'), array($this, '_handleFailure'));
     }
 
     /**
