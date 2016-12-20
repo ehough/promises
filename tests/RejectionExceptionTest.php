@@ -16,7 +16,7 @@ class Thing1
     }
 }
 
-class Thing2 implements \JsonSerializable
+class Thing2
 {
     public function jsonSerialize()
     {

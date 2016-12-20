@@ -27,7 +27,7 @@ class RejectionException extends \RuntimeException
             || (is_object($reason) && method_exists($reason, '__toString'))
         ) {
             $message .= ' with reason: ' . $this->reason;
-        } elseif ($reason instanceof \JsonSerializable) {
+        } elseif ($this->_isJsonSerializable($reason)) {
             $message .= ' with reason: '
                 . json_encode($this->reason, JSON_PRETTY_PRINT);
         }
@@ -43,5 +43,22 @@ class RejectionException extends \RuntimeException
     public function getReason()
     {
         return $this->reason;
+    }
+
+    private function _isJsonSerializable($candidate)
+    {
+        if (interface_exists('JsonSerializable') && is_subclass_of($candidate, 'JsonSerializable')) {
+
+            return true;
+        }
+
+        if (!is_object($candidate)) {
+
+            return false;
+        }
+
+        $ref = new \ReflectionClass(get_class($candidate));
+
+        return $ref->hasMethod('jsonSerialize');
     }
 }
