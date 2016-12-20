@@ -153,14 +153,14 @@ class PromiseTest extends \PHPUnit_Framework_TestCase
     {
         $p = new Promise(function () use (&$p) { $p->reject('Foo!'); });
         $p2 = $p->then(null, function ($reason) {
-            return new RejectedPromise([$reason]);
+            return new RejectedPromise(array($reason));
         });
 
         try {
             $p2->wait();
             $this->fail('Should have thrown');
         } catch (RejectionException $e) {
-            $this->assertEquals(['Foo!'], $e->getReason());
+            $this->assertEquals(array('Foo!'), $e->getReason());
         }
     }
 
@@ -250,7 +250,7 @@ class PromiseTest extends \PHPUnit_Framework_TestCase
         $p2 = new Promise(null, function () use (&$called2) { $called2 = true; });
         $p3 = new Promise(null, function () use (&$called3) { $called3 = true; });
         $p4 = $p2->then(function () use ($p3) { return $p3; });
-        $p5 = $p4->then(function () { $this->fail(); });
+        $p5 = $p4->then(array($this, '__closureSimpleFail'));
         $p4->cancel();
         $this->assertEquals('pending', $p1->getState());
         $this->assertEquals('rejected', $p2->getState());
@@ -259,6 +259,11 @@ class PromiseTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($called1);
         $this->assertTrue($called2);
         $this->assertFalse($called3);
+    }
+
+    public function __closureSimpleFail()
+    {
+        $this->fail();
     }
 
     public function testRejectsPromiseWhenCancelFails()
@@ -468,7 +473,7 @@ class PromiseTest extends \PHPUnit_Framework_TestCase
 
     public function testForwardsHandlersWhenFulfilledPromiseIsReturned()
     {
-        $res = [];
+        $res = array();
         $p = new Promise();
         $p2 = new Promise();
         $p2->resolve('foo');
@@ -480,12 +485,12 @@ class PromiseTest extends \PHPUnit_Framework_TestCase
         $p->resolve('a');
         $p->then(function ($v) use (&$res) { $res[] = 'D:' . $v; });
         P\queue()->run();
-        $this->assertEquals(['A:foo', 'B', 'D:a', 'C:foo'], $res);
+        $this->assertEquals(array('A:foo', 'B', 'D:a', 'C:foo'), $res);
     }
 
     public function testForwardsHandlersWhenRejectedPromiseIsReturned()
     {
-        $res = [];
+        $res = array();
         $p = new Promise();
         $p2 = new Promise();
         $p2->reject('foo');
@@ -495,12 +500,12 @@ class PromiseTest extends \PHPUnit_Framework_TestCase
         $p->reject('a');
         $p->then(null, function ($v) use (&$res) { $res[] = 'D:' . $v; });
         P\queue()->run();
-        $this->assertEquals(['A:foo', 'B', 'D:a', 'C:foo'], $res);
+        $this->assertEquals(array('A:foo', 'B', 'D:a', 'C:foo'), $res);
     }
 
     public function testDoesNotForwardRejectedPromise()
     {
-        $res = [];
+        $res = array();
         $p = new Promise();
         $p2 = new Promise();
         $p2->cancel();
@@ -510,12 +515,12 @@ class PromiseTest extends \PHPUnit_Framework_TestCase
         $p->resolve('a');
         $p->then(function ($v) use (&$res) { $res[] = 'D:' . $v; });
         P\queue()->run();
-        $this->assertEquals(['B:a', 'D:a'], $res);
+        $this->assertEquals(array('B:a', 'D:a'), $res);
     }
 
     public function testRecursivelyForwardsWhenOnlyThennable()
     {
-        $res = [];
+        $res = array();
         $p = new Promise();
         $p2 = new Thennable();
         $p2->resolve('foo');
@@ -525,12 +530,12 @@ class PromiseTest extends \PHPUnit_Framework_TestCase
         $p->resolve('a');
         $p->then(function ($v) use (&$res) { $res[] = 'D:' . $v; });
         P\queue()->run();
-        $this->assertEquals(['A:foo', 'B', 'D:a', 'C:foo'], $res);
+        $this->assertEquals(array('A:foo', 'B', 'D:a', 'C:foo'), $res);
     }
 
     public function testRecursivelyForwardsWhenNotInstanceOfPromise()
     {
-        $res = [];
+        $res = array();
         $p = new Promise();
         $p2 = new NotPromiseInstance();
         $p2->then(function ($v) use (&$res) { $res[] = 'A:' . $v; });
@@ -539,10 +544,10 @@ class PromiseTest extends \PHPUnit_Framework_TestCase
         $p->resolve('a');
         $p->then(function ($v) use (&$res) { $res[] = 'D:' . $v; });
         P\queue()->run();
-        $this->assertEquals(['B', 'D:a'], $res);
+        $this->assertEquals(array('B', 'D:a'), $res);
         $p2->resolve('foo');
         P\queue()->run();
-        $this->assertEquals(['B', 'D:a', 'A:foo', 'C:foo'], $res);
+        $this->assertEquals(array('B', 'D:a', 'A:foo', 'C:foo'), $res);
     }
 
     /**
