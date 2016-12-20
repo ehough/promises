@@ -68,6 +68,6 @@ class EachPromiseTestGenerator1 implements \Iterator
 
     public function __invoke()
     {
-        return new self();
+        return $this;
     }
 }

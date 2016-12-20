@@ -243,11 +243,7 @@ class EachPromiseTest extends \PHPUnit_Framework_TestCase
         $results = array();
         $values = array(10);
         $remaining = 9;
-        $iter = function () use (&$values) {
-            while ($value = array_pop($values)) {
-                yield $value;
-            }
-        };
+        $iter = new ArrayPoppingGenerator($values);
         $each = new EachPromise($iter(), array(
             'concurrency' => 1,
             'fulfilled' => function ($r) use (&$results, &$values, &$remaining) {
@@ -268,11 +264,7 @@ class EachPromiseTest extends \PHPUnit_Framework_TestCase
         $values = array($firstPromise);
         $results = array();
         $remaining = 9;
-        $iter = function () use (&$values) {
-            while ($value = array_pop($values)) {
-                yield $value;
-            }
-        };
+        $iter = new ArrayPoppingGenerator($values);
         $each = new EachPromise($iter(), array(
             'concurrency' => 1,
             'fulfilled' => function ($r) use (&$results, &$values, &$remaining, &$pending) {
@@ -309,18 +301,7 @@ class EachPromiseTest extends \PHPUnit_Framework_TestCase
             $promises[] = $p;
         }
 
-        $iter = function () use (&$promises, &$pending) {
-            foreach ($promises as $promise) {
-                // Resolve a promises, which will trigger the then() function,
-                // which would cause the EachPromise to try to add more
-                // promises to the queue. Without a lock, this would trigger
-                // a "Cannot resume an already running generator" fatal error.
-                if ($p = array_pop($pending)) {
-                    $p->wait();
-                }
-                yield $promise;
-            }
-        };
+        $iter = new EachPromiseTestGenerator2($promises, $pending);
 
         $each = new EachPromise($iter(), array(
             'concurrency' => 5,
