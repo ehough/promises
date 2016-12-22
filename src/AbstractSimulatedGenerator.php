@@ -12,11 +12,6 @@ abstract class AbstractSimulatedGenerator implements \Iterator
     private $_lastValueSentIn;
 
     /**
-     * @var bool
-     */
-    private $_hasBegunIteration;
-
-    /**
      * @var int
      */
     private $_position = 0;
@@ -93,12 +88,15 @@ abstract class AbstractSimulatedGenerator implements \Iterator
      */
     public final function rewind()
     {
-        if ($this->_hasBegunIteration) {
+        if ($this->_positionsExecutedCount > 0) {
 
             throw new \RuntimeException('Cannot rewind a generator that was already run');
         }
 
-        $this->runToNextYieldStatement();
+        /*
+         * Run to the first yield statement, if we haven't already.
+         */
+        $this->current();
     }
 
     /**
@@ -112,7 +110,7 @@ abstract class AbstractSimulatedGenerator implements \Iterator
     {
         $this->_lastValueSentIn = $value;
 
-        if ($this->_hasBegunIteration || $this->_positionsExecutedCount > 0) {
+        if ($this->_positionsExecutedCount > 0) {
 
             $this->_position++;
 
@@ -123,8 +121,6 @@ abstract class AbstractSimulatedGenerator implements \Iterator
 
             return $this->_lastYieldedValue;
         }
-
-        $this->_hasBegunIteration = true;
 
         return $this->current();
     }

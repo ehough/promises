@@ -51,12 +51,12 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
         $a = new Promise(function () use (&$a) { $a->resolve('a'); });
         $b = new Promise(function () use (&$b) { $b->reject('b'); });
         $c = new Promise(function () use (&$c, $e) { $c->reject($e); });
-        $results = \GuzzleHttp\Promise\inspect_all([$a, $b, $c]);
-        $this->assertEquals([
-            ['state' => 'fulfilled', 'value' => 'a'],
-            ['state' => 'rejected', 'reason' => 'b'],
-            ['state' => 'rejected', 'reason' => $e]
-        ], $results);
+        $results = \GuzzleHttp\Promise\inspect_all(array($a, $b, $c));
+        $this->assertEquals(array(
+            array('state' => 'fulfilled', 'value' => 'a'),
+            array('state' => 'rejected', 'reason' => 'b'),
+            array('state' => 'rejected', 'reason' => $e)
+        ), $results);
     }
 
     /**
@@ -64,26 +64,26 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
      */
     public function testUnwrapsPromisesWithNoDefaultAndFailure()
     {
-        $promises = [new FulfilledPromise('a'), new Promise()];
+        $promises = array(new FulfilledPromise('a'), new Promise());
         \GuzzleHttp\Promise\unwrap($promises);
     }
 
     public function testUnwrapsPromisesWithNoDefault()
     {
-        $promises = [new FulfilledPromise('a')];
-        $this->assertEquals(['a'], \GuzzleHttp\Promise\unwrap($promises));
+        $promises = array(new FulfilledPromise('a'));
+        $this->assertEquals(array('a'), \GuzzleHttp\Promise\unwrap($promises));
     }
 
     public function testUnwrapsPromisesWithKeys()
     {
-        $promises = [
+        $promises = array(
             'foo' => new FulfilledPromise('a'),
             'bar' => new FulfilledPromise('b'),
-        ];
-        $this->assertEquals([
+        );
+        $this->assertEquals(array(
             'foo' => 'a',
             'bar' => 'b'
-        ], \GuzzleHttp\Promise\unwrap($promises));
+        ), \GuzzleHttp\Promise\unwrap($promises));
     }
 
     public function testAllAggregatesSortedArray()
@@ -91,7 +91,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
         $a = new Promise();
         $b = new Promise();
         $c = new Promise();
-        $d = \GuzzleHttp\Promise\all([$a, $b, $c]);
+        $d = \GuzzleHttp\Promise\all(array($a, $b, $c));
         $b->resolve('b');
         $a->resolve('a');
         $c->resolve('c');
@@ -100,7 +100,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             function ($reason) use (&$result) { $result = $reason; }
         );
         P\queue()->run();
-        $this->assertEquals(['a', 'b', 'c'], $result);
+        $this->assertEquals(array('a', 'b', 'c'), $result);
     }
 
     public function testAllThrowsWhenAnyRejected()
@@ -108,7 +108,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
         $a = new Promise();
         $b = new Promise();
         $c = new Promise();
-        $d = \GuzzleHttp\Promise\all([$a, $b, $c]);
+        $d = \GuzzleHttp\Promise\all(array($a, $b, $c));
         $b->resolve('b');
         $a->reject('fail');
         $c->resolve('c');
@@ -125,20 +125,20 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
         $a = new Promise();
         $b = new Promise();
         $c = new Promise();
-        $d = \GuzzleHttp\Promise\some(2, [$a, $b, $c]);
+        $d = \GuzzleHttp\Promise\some(2, array($a, $b, $c));
         $b->resolve('b');
         $c->resolve('c');
         $a->resolve('a');
         $d->then(function ($value) use (&$result) { $result = $value; });
         P\queue()->run();
-        $this->assertEquals(['b', 'c'], $result);
+        $this->assertEquals(array('b', 'c'), $result);
     }
 
     public function testSomeRejectsWhenTooManyRejections()
     {
         $a = new Promise();
         $b = new Promise();
-        $d = \GuzzleHttp\Promise\some(2, [$a, $b]);
+        $d = \GuzzleHttp\Promise\some(2, array($a, $b));
         $a->reject('bad');
         $b->resolve('good');
         P\queue()->run();
@@ -156,8 +156,8 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
         $a = new Promise(function () use (&$a) { $a->resolve('a'); });
         $b = new Promise(function () use (&$b) { $b->resolve('b'); });
         $c = new Promise(function () use (&$c) { $c->resolve('c'); });
-        $d = \GuzzleHttp\Promise\some(2, [$a, $b, $c]);
-        $this->assertEquals(['a', 'b'], $d->wait());
+        $d = \GuzzleHttp\Promise\some(2, array($a, $b, $c));
+        $this->assertEquals(array('a', 'b'), $d->wait());
     }
 
     /**
@@ -167,7 +167,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
     public function testThrowsIfImpossibleToWaitForSomeCount()
     {
         $a = new Promise(function () use (&$a) { $a->resolve('a'); });
-        $d = \GuzzleHttp\Promise\some(2, [$a]);
+        $d = \GuzzleHttp\Promise\some(2, array($a));
         $d->wait();
     }
 
@@ -179,7 +179,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
     {
         $a = new Promise();
         $b = new Promise();
-        $d = \GuzzleHttp\Promise\some(3, [$a, $b]);
+        $d = \GuzzleHttp\Promise\some(3, array($a, $b));
         $a->resolve('a');
         $b->resolve('b');
         $d->wait();
@@ -189,7 +189,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
     {
         $a = new Promise();
         $b = new Promise();
-        $c = \GuzzleHttp\Promise\any([$a, $b]);
+        $c = \GuzzleHttp\Promise\any(array($a, $b));
         $b->resolve('b');
         $a->resolve('a');
         //P\queue()->run();
@@ -204,7 +204,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
         $a = new Promise();
         $b = new Promise();
         $c = new Promise();
-        $d = \GuzzleHttp\Promise\settle([$a, $b, $c]);
+        $d = \GuzzleHttp\Promise\settle(array($a, $b, $c));
         $b->resolve('b');
         $c->resolve('c');
         $a->reject('a');
@@ -212,39 +212,39 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('fulfilled', $d->getState());
         $d->then(function ($value) use (&$result) { $result = $value; });
         P\queue()->run();
-        $this->assertEquals([
-            ['state' => 'rejected', 'reason' => 'a'],
-            ['state' => 'fulfilled', 'value' => 'b'],
-            ['state' => 'fulfilled', 'value' => 'c']
-        ], $result);
+        $this->assertEquals(array(
+            array('state' => 'rejected', 'reason' => 'a'),
+            array('state' => 'fulfilled', 'value' => 'b'),
+            array('state' => 'fulfilled', 'value' => 'c')
+        ), $result);
     }
 
     public function testCanInspectFulfilledPromise()
     {
         $p = new FulfilledPromise('foo');
-        $this->assertEquals([
+        $this->assertEquals(array(
             'state' => 'fulfilled',
             'value' => 'foo'
-        ], \GuzzleHttp\Promise\inspect($p));
+        ), \GuzzleHttp\Promise\inspect($p));
     }
 
     public function testCanInspectRejectedPromise()
     {
         $p = new RejectedPromise('foo');
-        $this->assertEquals([
+        $this->assertEquals(array(
             'state'  => 'rejected',
             'reason' => 'foo'
-        ], \GuzzleHttp\Promise\inspect($p));
+        ), \GuzzleHttp\Promise\inspect($p));
     }
 
     public function testCanInspectRejectedPromiseWithNormalException()
     {
         $e = new \Exception('foo');
         $p = new RejectedPromise($e);
-        $this->assertEquals([
+        $this->assertEquals(array(
             'state'  => 'rejected',
             'reason' => $e
-        ], \GuzzleHttp\Promise\inspect($p));
+        ), \GuzzleHttp\Promise\inspect($p));
     }
 
     public function testCallsEachLimit()
@@ -258,7 +258,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
 
     public function testEachLimitAllRejectsOnFailure()
     {
-        $p = [new FulfilledPromise('a'), new RejectedPromise('b')];
+        $p = array(new FulfilledPromise('a'), new RejectedPromise('b'));
         $aggregate = \GuzzleHttp\Promise\each_limit_all($p, 2);
         P\queue()->run();
         $this->assertEquals(P\PromiseInterface::REJECTED, $aggregate->getState());
