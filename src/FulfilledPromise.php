@@ -37,7 +37,7 @@ class FulfilledPromise implements PromiseInterface
         $queue->add(function () use ($p, $value, $onFulfilled, $pendingState) {
             if ($p->getState() === $pendingState) {
                 try {
-                    $p->resolve($onFulfilled($value));
+                    $p->resolve(call_user_func($onFulfilled, $value));
                 } catch (\Throwable $e) {
                     $p->reject($e);
                 } catch (\Exception $e) {
