@@ -1,21 +1,29 @@
 <?php
 namespace GuzzleHttp\Promise\Tests;
 
-class ArrayGenerator extends \ArrayIterator
+use GuzzleHttp\Promise\AbstractSimulatedGenerator;
+
+class ArrayGenerator extends AbstractSimulatedGenerator
 {
-    /**
-     * Rewind the Iterator to the first element
-     * @link http://php.net/manual/en/iterator.rewind.php
-     * @return void Any returned value is ignored.
-     * @since 5.0.0
-     */
-    public function rewind()
+    private $_array;
+
+    public function __construct(array $array)
     {
-        throw new \RuntimeException('Iteration has already begun');
+        $this->_array = $array;
     }
 
-    public function send()
+    protected function isValid($position)
     {
-        $this->next();
+        return $position < count($this->_array);
+    }
+
+    /**
+     * @param int $position
+     *
+     * @return null|mixed
+     */
+    protected function executePosition($position)
+    {
+        return array($this->_array[$position]);
     }
 }

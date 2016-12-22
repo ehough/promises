@@ -2,17 +2,18 @@
 namespace GuzzleHttp\Promise\Tests;
 
 use GuzzleHttp\Promise\AbstractSimulatedGenerator;
+use GuzzleHttp\Promise\FulfilledPromise;
 
-class EachPromiseTestGenerator1 extends AbstractSimulatedGenerator
+class FunctionsTestGenerator1 extends AbstractSimulatedGenerator
 {
     public function executePosition($position)
     {
         if ($position === 0) {
 
-            return array('a');
+            return array(new FulfilledPromise('a'));
         }
 
-        throw new \Exception('Failure');
+        return array($this->getLastValueSentIn() . 'b');
     }
 
     protected function isValid($position)
