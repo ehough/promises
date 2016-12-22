@@ -29,7 +29,7 @@ class RejectionException extends \RuntimeException
             $message .= ' with reason: ' . $this->reason;
         } elseif ($this->_isJsonSerializable($reason)) {
             $message .= ' with reason: '
-                . json_encode($this->reason, JSON_PRETTY_PRINT);
+                . version_compare(PHP_VERSION, '5.4', '>=') ? json_encode($this->reason, JSON_PRETTY_PRINT) : json_encode($this->reason);
         }
 
         parent::__construct($message);

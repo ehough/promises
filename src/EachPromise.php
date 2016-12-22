@@ -132,8 +132,8 @@ class EachPromise implements PromisorInterface
         $promise = promise_for($this->iterable->current());
         $idx = $this->iterable->key();
 
-        $fulfilledCallback = array($this, '_onPendingFulfilled');
-        $rejectedCallback = array($this, '_onPendingRejected');
+        $fulfilledCallback = array($this, '__onPendingFulfilled');
+        $rejectedCallback = array($this, '__onPendingRejected');
         $this->pending[$idx] = $promise->then(
             function ($value) use ($idx, $fulfilledCallback) {
                 call_user_func($fulfilledCallback, $value, $idx);
@@ -146,7 +146,10 @@ class EachPromise implements PromisorInterface
         return true;
     }
 
-    private function _onPendingFulfilled($value, $idx)
+    /**
+     * @internal
+     */
+    public function __onPendingFulfilled($value, $idx)
     {
         if ($this->onFulfilled) {
             call_user_func(
@@ -156,7 +159,10 @@ class EachPromise implements PromisorInterface
         $this->step($idx);
     }
 
-    private function _onPendingRejected($reason, $idx)
+    /**
+     * @internal
+     */
+    public function __onPendingRejected($reason, $idx)
     {
         if ($this->onRejected) {
             call_user_func(
