@@ -34,7 +34,7 @@ class RejectedPromise implements PromiseInterface
         $reason = $this->reason;
         $p = new Promise(array($queue, 'run'));
         $pendingStatus = self::PENDING;
-        $queue->add(static function () use ($p, $reason, $onRejected, $pendingStatus) {
+        $queue->add(function () use ($p, $reason, $onRejected, $pendingStatus) {
             if ($p->getState() === $pendingStatus) {
                 try {
                     // Return a resolved promise if onRejected does not throw.
