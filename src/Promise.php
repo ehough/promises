@@ -203,7 +203,7 @@ class Promise implements PromiseInterface
 
         try {
             if (isset($handler[$index])) {
-                $promise->resolve($handler[$index]($value));
+                $promise->resolve(call_user_func($handler[$index], $value));
             } elseif ($index === 1) {
                 // Forward resolution values as-is.
                 $promise->resolve($value);
