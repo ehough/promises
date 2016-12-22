@@ -6,11 +6,6 @@ use Hough\Promise\Promise;
 
 class CoroutineTestGenerator1 extends AbstractSimulatedGenerator
 {
-    protected function isValid($position)
-    {
-        return $position < 1;
-    }
-
     /**
      * @param int $position
      *
@@ -18,6 +13,11 @@ class CoroutineTestGenerator1 extends AbstractSimulatedGenerator
      */
     protected function executePosition($position)
     {
+        if ($position === 1) {
+
+            return null;
+        }
+
         $promise = new Promise(function () use (&$promise) {
             $promise->resolve(1);
         });

@@ -32,6 +32,11 @@ class FunctionsTestGenerator12 extends AbstractSimulatedGenerator
 
     public function executePosition($position)
     {
+        if ($this->_forLoopIndex === 21) {
+
+            return null;
+        }
+
         if ($this->_forLoopIndex === 20) {
 
             $this->_forLoopIndex++;
@@ -72,11 +77,6 @@ class FunctionsTestGenerator12 extends AbstractSimulatedGenerator
 
         return array($this->_promises[$index]);
 
-    }
-
-    protected function isValid($position)
-    {
-        return $this->_forLoopIndex <= 20;
     }
 
     protected function onExceptionThrownIn(\Exception $e, $position)

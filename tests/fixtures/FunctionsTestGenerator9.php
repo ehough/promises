@@ -12,22 +12,25 @@ class FunctionsTestGenerator9 extends AbstractSimulatedGenerator
 
     private $_exceptionCaught = false;
 
-    private $_forLoopIndex = 0;
-
     public function executePosition($position)
     {
-        if ($this->_forLoopIndex === 1000) {
+        if ($position === 1002) {
 
-            $this->_forLoopIndex++;
+            return null;
+        }
+
+        if ($position === 1001) {
 
             return array($this->_value);
         }
+
+        $forLoopIndex = ($position + 1);
 
         if ($this->_exceptionCaught) {
 
             $this->_exceptionCaught = false;
 
-            return array(new FulfilledPromise($this->_forLoopIndex++));
+            return array(new FulfilledPromise($forLoopIndex));
         }
 
         if ($position > 0) {
@@ -35,17 +38,12 @@ class FunctionsTestGenerator9 extends AbstractSimulatedGenerator
             $this->_value = $this->getLastYieldedValue();
         }
 
-        if ($this->_forLoopIndex % 2) {
+        if ($forLoopIndex % 2) {
 
-            return array(new FulfilledPromise($this->_forLoopIndex++));
+            return array(new FulfilledPromise($forLoopIndex));
         }
 
-        return array(new RejectedPromise($this->_forLoopIndex));
-    }
-
-    protected function isValid($position)
-    {
-        return $this->_forLoopIndex < 1001;
+        return array(new RejectedPromise($forLoopIndex));
     }
 
     protected function onExceptionThrownIn(\Exception $e, $position)

@@ -2,7 +2,7 @@
 namespace Hough\Promise;
 
 /**
- * For PHP 5.4 and below, this class will help you pretend to be an actual generator.
+ * Lets you pretend to be an actual generator. Useful when you need to emulate a generator in PHP 5.4 and below.
  */
 abstract class AbstractSimulatedGenerator implements \Iterator
 {
@@ -36,9 +36,29 @@ abstract class AbstractSimulatedGenerator implements \Iterator
      */
     private $_positionsExecutedCount = 0;
 
+    /**
+     * @var bool
+     */
+    private $_sendInvokedAtLeastOnce = false;
+
+    /**
+     * @var bool
+     */
+    private $_hasMoreToExecute = true;
+
+    /**
+     * Get the yielded value.
+     *
+     * @return mixed|null The yielded value.
+     */
     public final function current()
     {
-        /**
+        if (!$this->valid()) {
+
+            return null;
+        }
+
+        /*
          * Multiple calls to current() should be idempotent
          */
         if ($this->_lastPositionExecuted !== $this->_position) {
@@ -46,11 +66,13 @@ abstract class AbstractSimulatedGenerator implements \Iterator
             $this->runToNextYieldStatement();
         }
 
-        return $this->getLastYieldedValue();
+        return $this->valid() ? $this->getLastYieldedValue() : null;
     }
 
     /**
-     * @return mixed
+     * Get the return value of a generator.
+     *
+     * @return mixed The generator's return value once it has finished executing.
      */
     public function getReturn()
     {
@@ -59,22 +81,24 @@ abstract class AbstractSimulatedGenerator implements \Iterator
     }
 
     /**
-     * Return the key of the current element
-     * @link http://php.net/manual/en/iterator.key.php
-     * @return mixed scalar on success, or null on failure.
-     * @since 5.0.0
+     * Get the yielded key.
+     *
+     * @return mixed The yielded key.
      */
     public final function key()
     {
-        //override point
-        return $this->_lastYieldedKey;
+        /*
+         * Run to the first yield statement, if we haven't already.
+         */
+        $this->current();
+
+        return $this->valid() ? $this->_lastYieldedKey : null;
     }
 
     /**
-     * Move forward to next element
-     * @link http://php.net/manual/en/iterator.next.php
-     * @return void Any returned value is ignored.
-     * @since 5.0.0
+     * Resume execution of the generator.
+     *
+     * @return void
      */
     public final function next()
     {
@@ -88,7 +112,7 @@ abstract class AbstractSimulatedGenerator implements \Iterator
      */
     public final function rewind()
     {
-        if ($this->_positionsExecutedCount > 0) {
+        if ($this->_sendInvokedAtLeastOnce) {
 
             throw new \RuntimeException('Cannot rewind a generator that was already run');
         }
@@ -108,18 +132,16 @@ abstract class AbstractSimulatedGenerator implements \Iterator
      */
     public final function send($value)
     {
-        $this->_lastValueSentIn = $value;
+        $this->_lastValueSentIn        = $value;
+        $this->_sendInvokedAtLeastOnce = true;
 
+        /*
+         * If we've already ran to the first yield statement (from rewind() or key(), for instance), we need
+         * to try to move to the next position;
+         */
         if ($this->_positionsExecutedCount > 0) {
 
             $this->_position++;
-
-            if ($this->valid()) {
-
-                return $this->current();
-            }
-
-            return $this->_lastYieldedValue;
         }
 
         return $this->current();
@@ -129,6 +151,15 @@ abstract class AbstractSimulatedGenerator implements \Iterator
     {
         if ($name === 'throw') {
 
+            /*
+             * If the generator is already closed when this method is invoked, the exception will be thrown in the
+             * caller's context instead.
+             */
+            if (!$this->valid()) {
+
+                throw $args[0];
+            }
+
             return $this->onExceptionThrownIn($args[0], $this->_position);
         }
 
@@ -136,15 +167,13 @@ abstract class AbstractSimulatedGenerator implements \Iterator
     }
 
     /**
-     * Checks if current position is valid
-     * @link http://php.net/manual/en/iterator.valid.php
-     * @return boolean The return value will be casted to boolean and then evaluated.
-     * Returns true on success or false on failure.
-     * @since 5.0.0
+     * Check if the iterator has been closed.
+     *
+     * @return bool False if the iterator has been closed. Otherwise returns true.
      */
     public final function valid()
     {
-        return $this->isValid($this->_position);
+        return $this->_hasMoreToExecute;
     }
 
     public final function __invoke()
@@ -174,12 +203,10 @@ abstract class AbstractSimulatedGenerator implements \Iterator
         throw $e;
     }
 
-    protected abstract function isValid($position);
-
     /**
      * @param int $position
      *
-     * @return null|mixed
+     * @return null|array
      */
     protected abstract function executePosition($position);
 
@@ -189,6 +216,18 @@ abstract class AbstractSimulatedGenerator implements \Iterator
         $this->_lastPositionExecuted = $this->_position;
 
         $this->_positionsExecutedCount++;
+
+        /*
+         * Nothing more to do.
+         */
+        if ($executionResult === null) {
+
+            $this->_hasMoreToExecute = false;
+            $this->_lastYieldedValue = null;
+            $this->_lastYieldedKey   = null;
+
+            return;
+        }
 
         if (!is_array($executionResult) || count($executionResult) === 0 || count($executionResult) >= 3) {
 

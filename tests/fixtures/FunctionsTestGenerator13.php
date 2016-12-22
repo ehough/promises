@@ -17,17 +17,17 @@ class FunctionsTestGenerator13 extends AbstractSimulatedGenerator
 
     public function executePosition($position)
     {
+        if ($position === count($this->_promises) + 1) {
+
+            return null;
+        }
+
         if ($position === 0) {
 
             return array(new FulfilledPromise('foo!'));
         }
 
         return array($this->_promises[($position - 1)]);
-    }
-
-    protected function isValid($position)
-    {
-        return $position < count($this->_promises) + 1;
     }
 }
 

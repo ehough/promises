@@ -34,9 +34,13 @@ class FunctionsTestGenerator2 extends AbstractSimulatedGenerator
 
                 return array(new FulfilledPromise($this->_exceptionAtPosition1->getReason()));
 
-            default:
+            case 2:
 
                 return array($this->getLastValueSentIn() . 'b');
+
+            default:
+
+                return null;
         }
     }
 
@@ -51,10 +55,5 @@ class FunctionsTestGenerator2 extends AbstractSimulatedGenerator
 
             $this->_exceptionAtPosition1 = $e;
         }
-    }
-
-    protected function isValid($position)
-    {
-        return $position < 3;
     }
 }

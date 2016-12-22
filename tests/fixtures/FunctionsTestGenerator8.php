@@ -22,11 +22,11 @@ class FunctionsTestGenerator8 extends AbstractSimulatedGenerator
             return array($this->_value);
         }
 
-        return array(new FulfilledPromise($position));
-    }
+        if ($position === 1001) {
 
-    protected function isValid($position)
-    {
-        return $position < 1001;
+            return null;
+        }
+
+        return array(new FulfilledPromise($position));
     }
 }
