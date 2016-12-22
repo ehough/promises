@@ -38,7 +38,7 @@ class RejectedPromise implements PromiseInterface
             if ($p->getState() === $pendingStatus) {
                 try {
                     // Return a resolved promise if onRejected does not throw.
-                    $p->resolve($onRejected($reason));
+                    $p->resolve(call_user_func($onRejected, $reason));
                 } catch (\Throwable $e) {
                     // onRejected threw, so return a rejected promise.
                     $p->reject($e);
