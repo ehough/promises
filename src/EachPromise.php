@@ -132,26 +132,38 @@ class EachPromise implements PromisorInterface
         $promise = promise_for($this->iterable->current());
         $idx = $this->iterable->key();
 
+        $fulfilledCallback = array($this, '_onPendingFulfilled');
+        $rejectedCallback = array($this, '_onPendingRejected');
         $this->pending[$idx] = $promise->then(
-            function ($value) use ($idx) {
-                if ($this->onFulfilled) {
-                    call_user_func(
-                        $this->onFulfilled, $value, $idx, $this->aggregate
-                    );
-                }
-                $this->step($idx);
+            function ($value) use ($idx, $fulfilledCallback) {
+                call_user_func($fulfilledCallback, $value, $idx);
             },
-            function ($reason) use ($idx) {
-                if ($this->onRejected) {
-                    call_user_func(
-                        $this->onRejected, $reason, $idx, $this->aggregate
-                    );
-                }
-                $this->step($idx);
+            function ($reason) use ($idx, $rejectedCallback) {
+                call_user_func($rejectedCallback, $reason, $idx);
             }
         );
 
         return true;
+    }
+
+    private function _onPendingFulfilled($value, $idx)
+    {
+        if ($this->onFulfilled) {
+            call_user_func(
+                $this->onFulfilled, $value, $idx, $this->aggregate
+            );
+        }
+        $this->step($idx);
+    }
+
+    private function _onPendingRejected($reason, $idx)
+    {
+        if ($this->onRejected) {
+            call_user_func(
+                $this->onRejected, $reason, $idx, $this->aggregate
+            );
+        }
+        $this->step($idx);
     }
 
     private function advanceIterator()
