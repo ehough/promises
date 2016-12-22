@@ -577,7 +577,8 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
         });
         $a->resolve('a');
         $b->reject('b');
-        $reason = P\inspect($promise)['reason'];
+        $inspect = P\inspect($promise);
+        $reason = $inspect['reason'];
         $this->assertInstanceOf('OutOfBoundsException', $reason);
         $this->assertInstanceOf('GuzzleHttp\Promise\RejectionException', $reason->getPrevious());
     }
