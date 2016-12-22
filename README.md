@@ -1,6 +1,6 @@
 # ehough/promises
 
-[![Build Status](https://travis-ci.org/guzzle/guzzle-services.svg?branch=develop)](https://travis-ci.org/ehough/promises)
+[![Build Status](https://travis-ci.org/ehough/promises.svg?branch=develop)](https://travis-ci.org/ehough/promises)
 [![Latest Stable Version](https://poser.pugx.org/ehough/promises/v/stable)](https://packagist.org/packages/ehough/promises)
 [![License](https://poser.pugx.org/ehough/promises/license)](https://packagist.org/packages/ehough/promises)
 
