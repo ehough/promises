@@ -22,23 +22,19 @@ class FunctionsTestGenerator10 extends AbstractSimulatedGenerator
 
     private $_assertEquals;
 
-    private $_done;
-
     private $_reachedLastYield;
 
     public function __construct(array $promises, $assertEquals)
     {
         $this->_promises = $promises;
         $this->_assertEquals = $assertEquals;
-        $this->_done = false;
     }
 
     public function executePosition($position)
     {
         if ($this->_reachedLastYield) {
 
-            $this->_done = true;
-            return array(null);
+            return null;
         }
 
         if ($position === 0) {
@@ -106,11 +102,6 @@ class FunctionsTestGenerator10 extends AbstractSimulatedGenerator
         $this->_reachedLastYield = true;
 
         return array($this->_value);
-    }
-
-    protected function isValid($position)
-    {
-        return !$this->_done;
     }
 }
 

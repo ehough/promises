@@ -22,6 +22,11 @@ class EachPromiseTestGenerator2 extends AbstractSimulatedGenerator
      */
     protected function executePosition($position)
     {
+        if ($position === count($this->_promises)) {
+
+            return null;
+        }
+
         $toReturn = $this->_promises[$position];
 
         // Resolve a promises, which will trigger the then() function,
@@ -34,9 +39,15 @@ class EachPromiseTestGenerator2 extends AbstractSimulatedGenerator
 
         return array($toReturn);
     }
-
-    protected function isValid($position)
-    {
-        return $position < count($this->_promises);
-    }
 }
+
+//foreach ($promises as $promise) {
+//    // Resolve a promises, which will trigger the then() function,
+//    // which would cause the EachPromise to try to add more
+//    // promises to the queue. Without a lock, this would trigger
+//    // a "Cannot resume an already running generator" fatal error.
+//    if ($p = array_pop($pending)) {
+//        $p->wait();
+//    }
+//    yield $promise;
+//}

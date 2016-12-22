@@ -31,6 +31,11 @@ class FunctionsTestGenerator11 extends AbstractSimulatedGenerator
 
     public function executePosition($position)
     {
+        if ($position === 5) {
+
+            return null;
+        }
+
         if ($position === 0) {
 
             return array($this->_p1);
@@ -62,11 +67,6 @@ class FunctionsTestGenerator11 extends AbstractSimulatedGenerator
         }
 
         return array($this->_p5);
-    }
-
-    protected function isValid($position)
-    {
-        return $position < 5;
     }
 
     protected function onExceptionThrownIn(\Exception $e, $position)

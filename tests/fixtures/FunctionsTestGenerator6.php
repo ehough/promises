@@ -15,6 +15,11 @@ class FunctionsTestGenerator6 extends AbstractSimulatedGenerator
 
     public function executePosition($position)
     {
+        if ($position === 1) {
+
+            return null;
+        }
+
         if ($position === 0) {
 
             return array(new RejectedPromise('a'));
@@ -24,11 +29,6 @@ class FunctionsTestGenerator6 extends AbstractSimulatedGenerator
         call_user_func($cb, 'Should have thrown into the coroutine!');
 
         throw new \RuntimeException('Should never reach position 1');
-    }
-
-    protected function isValid($position)
-    {
-        return $position < 1;
     }
 
     protected function onExceptionThrownIn(\Exception $e, $position)

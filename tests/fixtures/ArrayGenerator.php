@@ -5,6 +5,9 @@ use Hough\Promise\AbstractSimulatedGenerator;
 
 class ArrayGenerator extends AbstractSimulatedGenerator
 {
+    /**
+     * @var array
+     */
     private $_array;
 
     public function __construct(array $array)
@@ -12,10 +15,6 @@ class ArrayGenerator extends AbstractSimulatedGenerator
         $this->_array = $array;
     }
 
-    protected function isValid($position)
-    {
-        return $position < count($this->_array);
-    }
 
     /**
      * @param int $position
@@ -24,6 +23,11 @@ class ArrayGenerator extends AbstractSimulatedGenerator
      */
     protected function executePosition($position)
     {
+        if ($position === count($this->_array)) {
+
+            return null;
+        }
+
         return array($this->_array[$position]);
     }
 }

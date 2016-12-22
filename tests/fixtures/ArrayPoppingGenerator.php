@@ -14,11 +14,11 @@ class ArrayPoppingGenerator extends AbstractSimulatedGenerator
 
     public function executePosition($position)
     {
-        return array(array_pop($this->_array));
-    }
+        if (count($this->_array) === 0) {
 
-    protected function isValid($position)
-    {
-        return $this->getLastYieldedValue() !== null;
+            return null;
+        }
+
+        return array(array_pop($this->_array));
     }
 }

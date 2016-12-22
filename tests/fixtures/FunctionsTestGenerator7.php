@@ -39,11 +39,8 @@ class FunctionsTestGenerator7 extends AbstractSimulatedGenerator
 
             return array(new RejectedPromise('foo'));
         }
-    }
 
-    protected function isValid($position)
-    {
-        return $position < 2;
+        return null;
     }
 
     protected function onExceptionThrownIn(\Exception $e, $position)
