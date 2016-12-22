@@ -1,7 +1,7 @@
 {
-    "name": "guzzlehttp/promises",
+    "name": "ehough/promises",
     "type": "library",
-    "description": "Guzzle promises library",
+    "description": "Fork of guzzle/promises compatible with PHP 5.3+",
     "keywords": ["promise"],
     "license": "MIT",
     "authors": [
@@ -24,7 +24,7 @@
     },
     "autoload": {
         "psr-4": {
-            "GuzzleHttp\\Promise\\": "src/"
+            "Hough\\Promise\\": "src/"
         },
         "files": ["src/functions_include.php"]
     },

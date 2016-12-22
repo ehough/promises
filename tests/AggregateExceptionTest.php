@@ -1,7 +1,7 @@
 <?php
-namespace GuzzleHttp\Promise\Tests;
+namespace Hough\Promise\Tests;
 
-use GuzzleHttp\Promise\AggregateException;
+use Hough\Promise\AggregateException;
 
 class AggregateExceptionTest extends \PHPUnit_Framework_TestCase
 {

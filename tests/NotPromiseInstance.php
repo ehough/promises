@@ -1,8 +1,8 @@
 <?php
-namespace GuzzleHttp\Promise\Tests;
+namespace Hough\Promise\Tests;
 
-use GuzzleHttp\Promise\Promise;
-use GuzzleHttp\Promise\PromiseInterface;
+use Hough\Promise\Promise;
+use Hough\Promise\PromiseInterface;
 
 class NotPromiseInstance extends Thennable implements PromiseInterface
 {

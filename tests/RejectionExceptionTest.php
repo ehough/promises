@@ -1,7 +1,7 @@
 <?php
-namespace GuzzleHttp\Promise\Tests;
+namespace Hough\Promise\Tests;
 
-use GuzzleHttp\Promise\RejectionException;
+use Hough\Promise\RejectionException;
 
 class Thing1
 {
@@ -25,7 +25,7 @@ class Thing2
 }
 
 /**
- * @covers GuzzleHttp\Promise\RejectionException
+ * @covers Hough\Promise\RejectionException
  */
 class RejectionExceptionTest extends \PHPUnit_Framework_TestCase
 {

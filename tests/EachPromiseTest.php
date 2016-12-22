@@ -1,15 +1,15 @@
 <?php
-namespace GuzzleHttp\Promise\Tests;
+namespace Hough\Promise\Tests;
 
-use GuzzleHttp\Promise\RejectedPromise;
-use GuzzleHttp\Promise\FulfilledPromise;
-use GuzzleHttp\Promise\Promise;
-use GuzzleHttp\Promise\PromiseInterface;
-use GuzzleHttp\Promise\EachPromise;
-use GuzzleHttp\Promise as P;
+use Hough\Promise\RejectedPromise;
+use Hough\Promise\FulfilledPromise;
+use Hough\Promise\Promise;
+use Hough\Promise\PromiseInterface;
+use Hough\Promise\EachPromise;
+use Hough\Promise as P;
 
 /**
- * @covers GuzzleHttp\Promise\EachPromise
+ * @covers Hough\Promise\EachPromise
  */
 class EachPromiseTest extends \PHPUnit_Framework_TestCase
 {

@@ -1,7 +1,7 @@
 <?php
-namespace GuzzleHttp\Promise\Tests;
+namespace Hough\Promise\Tests;
 
-use GuzzleHttp\Promise\Coroutine;
+use Hough\Promise\Coroutine;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -16,10 +16,10 @@ class CoroutineTest extends PHPUnit_Framework_TestCase
     public function testShouldProxyPromiseMethodsToResultPromise($method, $args = array())
     {
         $coroutine = new Coroutine(function () { return new ArrayGenerator(array(0)); });
-        $mockPromise = $this->getMockForAbstractClass('\GuzzleHttp\Promise\PromiseInterface');
+        $mockPromise = $this->getMockForAbstractClass('\Hough\Promise\PromiseInterface');
         call_user_func_array(array($mockPromise->expects($this->once())->method($method), 'with'), $args);
 
-        $ref = new ReflectionClass('\GuzzleHttp\Promise\Coroutine');
+        $ref = new ReflectionClass('\Hough\Promise\Coroutine');
         $resultPromiseProp = $ref->getProperty('result');
         $resultPromiseProp->setAccessible(true);
         $resultPromiseProp->setValue($coroutine, $mockPromise);
@@ -44,8 +44,8 @@ class CoroutineTest extends PHPUnit_Framework_TestCase
         $coroutine = new Coroutine(function () { return new ArrayGenerator(array(0)); });
 
         $mockPromises = array(
-            'result' => $this->getMockForAbstractClass('\GuzzleHttp\Promise\PromiseInterface'),
-            'currentPromise' => $this->getMockForAbstractClass('\GuzzleHttp\Promise\PromiseInterface'),
+            'result' => $this->getMockForAbstractClass('\Hough\Promise\PromiseInterface'),
+            'currentPromise' => $this->getMockForAbstractClass('\Hough\Promise\PromiseInterface'),
         );
         foreach ($mockPromises as $propName => $mockPromise) {
             /**
@@ -55,7 +55,7 @@ class CoroutineTest extends PHPUnit_Framework_TestCase
                 ->method('cancel')
                 ->with();
 
-            $ref = new ReflectionClass('\GuzzleHttp\Promise\Coroutine');
+            $ref = new ReflectionClass('\Hough\Promise\Coroutine');
             $promiseProp = $ref->getProperty($propName);
             $promiseProp->setAccessible(true);
             $promiseProp->setValue($coroutine, $mockPromise);

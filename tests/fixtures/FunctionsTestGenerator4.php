@@ -1,9 +1,9 @@
 <?php
-namespace GuzzleHttp\Promise\Tests;
+namespace Hough\Promise\Tests;
 
-use GuzzleHttp\Promise\AbstractSimulatedGenerator;
-use GuzzleHttp\Promise\FulfilledPromise;
-use GuzzleHttp\Promise\RejectedPromise;
+use Hough\Promise\AbstractSimulatedGenerator;
+use Hough\Promise\FulfilledPromise;
+use Hough\Promise\RejectedPromise;
 
 class FunctionsTestGenerator4 extends AbstractSimulatedGenerator
 {

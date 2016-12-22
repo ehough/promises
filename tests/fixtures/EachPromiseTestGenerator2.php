@@ -1,7 +1,7 @@
 <?php
-namespace GuzzleHttp\Promise\Tests;
+namespace Hough\Promise\Tests;
 
-use GuzzleHttp\Promise\AbstractSimulatedGenerator;
+use Hough\Promise\AbstractSimulatedGenerator;
 
 class EachPromiseTestGenerator2 extends AbstractSimulatedGenerator
 {

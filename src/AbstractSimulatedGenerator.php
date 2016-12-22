@@ -1,5 +1,5 @@
 <?php
-namespace GuzzleHttp\Promise;
+namespace Hough\Promise;
 
 /**
  * For PHP 5.4 and below, this class will help you pretend to be an actual generator.

@@ -1,14 +1,14 @@
 <?php
-namespace GuzzleHttp\Promise\Tests;
+namespace Hough\Promise\Tests;
 
-use GuzzleHttp\Promise\CancellationException;
-use GuzzleHttp\Promise as P;
-use GuzzleHttp\Promise\Promise;
-use GuzzleHttp\Promise\RejectedPromise;
-use GuzzleHttp\Promise\RejectionException;
+use Hough\Promise\CancellationException;
+use Hough\Promise as P;
+use Hough\Promise\Promise;
+use Hough\Promise\RejectedPromise;
+use Hough\Promise\RejectionException;
 
 /**
- * @covers GuzzleHttp\Promise\Promise
+ * @covers Hough\Promise\Promise
  */
 class PromiseTest extends \PHPUnit_Framework_TestCase
 {
@@ -68,7 +68,7 @@ class PromiseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \GuzzleHttp\Promise\RejectionException
+     * @expectedException \Hough\Promise\RejectionException
      */
     public function testRejectsAndThrowsWhenWaitFailsToResolve()
     {
@@ -77,7 +77,7 @@ class PromiseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \GuzzleHttp\Promise\RejectionException
+     * @expectedException \Hough\Promise\RejectionException
      * @expectedExceptionMessage The promise was rejected with reason: foo
      */
     public function testThrowsWhenUnwrapIsRejectedWithNonException()
@@ -126,7 +126,7 @@ class PromiseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \GuzzleHttp\Promise\RejectionException
+     * @expectedException \Hough\Promise\RejectionException
      */
     public function testThrowsWhenWaitingOnPromiseWithNoWaitFunction()
     {
@@ -193,7 +193,7 @@ class PromiseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \GuzzleHttp\Promise\CancellationException
+     * @expectedException \Hough\Promise\CancellationException
      */
     public function testCancelsPromiseWhenNoCancelFunction()
     {
@@ -304,7 +304,7 @@ class PromiseTest extends \PHPUnit_Framework_TestCase
         $p2 = $p->then(function ($v) use (&$carry) { $carry = $v; });
         $this->assertNotSame($p, $p2);
         $this->assertNull($carry);
-        \GuzzleHttp\Promise\queue()->run();
+        \Hough\Promise\queue()->run();
         $this->assertEquals('foo', $carry);
     }
 
@@ -314,7 +314,7 @@ class PromiseTest extends \PHPUnit_Framework_TestCase
         $p->resolve('foo');
         $p2 = $p->then();
         $this->assertNotSame($p, $p2);
-        $this->assertInstanceOf('GuzzleHttp\Promise\FulfilledPromise', $p2);
+        $this->assertInstanceOf('Hough\Promise\FulfilledPromise', $p2);
     }
 
     public function testCreatesPromiseWhenRejectedAfterThen()
@@ -346,7 +346,7 @@ class PromiseTest extends \PHPUnit_Framework_TestCase
         $p->reject('foo');
         $p2 = $p->then();
         $this->assertNotSame($p, $p2);
-        $this->assertInstanceOf('GuzzleHttp\Promise\RejectedPromise', $p2);
+        $this->assertInstanceOf('Hough\Promise\RejectedPromise', $p2);
     }
 
     public function testInvokesWaitFnsForThens()

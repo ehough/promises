@@ -1,7 +1,7 @@
 <?php
-namespace GuzzleHttp\Promise\Test;
+namespace Hough\Promise\Test;
 
-use GuzzleHttp\Promise\TaskQueue;
+use Hough\Promise\TaskQueue;
 
 class TaskQueueTest extends \PHPUnit_Framework_TestCase
 {
