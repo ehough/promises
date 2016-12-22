@@ -542,7 +542,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
 
         $promises = array();
         for ($i = 0; $i < 20; $i++) {
-            $promises[] = $f();
+            $promises[] = call_user_func($f);
         }
 
         $p = P\coroutine(new FunctionsTestGenerator13($promises));

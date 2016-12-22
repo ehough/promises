@@ -45,7 +45,7 @@ class FunctionsTestGenerator2 extends AbstractSimulatedGenerator
         if (!($e instanceof RejectionException) || $position !== 0) {
 
             $cb = $this->_failCallback;
-            $cb();
+            call_user_func($cb);
 
         } else {
 

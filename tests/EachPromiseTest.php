@@ -228,7 +228,7 @@ class EachPromiseTest extends \PHPUnit_Framework_TestCase
     public function testRejectsAggregateWhenNextThrows()
     {
         $iter = new EachPromiseTestGenerator1();
-        $each = new EachPromise($iter());
+        $each = new EachPromise(call_user_func($iter));
         $p = $each->promise();
         $e = null;
         $received = null;
@@ -244,7 +244,7 @@ class EachPromiseTest extends \PHPUnit_Framework_TestCase
         $values = array(10);
         $remaining = 9;
         $iter = new ArrayPoppingGenerator($values);
-        $each = new EachPromise($iter(), array(
+        $each = new EachPromise(call_user_func($iter), array(
             'concurrency' => 1,
             'fulfilled' => function ($r) use (&$results, &$values, &$remaining) {
                 $results[] = $r;
@@ -265,7 +265,7 @@ class EachPromiseTest extends \PHPUnit_Framework_TestCase
         $results = array();
         $remaining = 9;
         $iter = new ArrayPoppingGenerator($values);
-        $each = new EachPromise($iter(), array(
+        $each = new EachPromise(call_user_func($iter), array(
             'concurrency' => 1,
             'fulfilled' => function ($r) use (&$results, &$values, &$remaining, &$pending) {
                 $results[] = $r;
@@ -303,7 +303,7 @@ class EachPromiseTest extends \PHPUnit_Framework_TestCase
 
         $iter = new EachPromiseTestGenerator2($promises, $pending);
 
-        $each = new EachPromise($iter(), array(
+        $each = new EachPromise(call_user_func($iter), array(
             'concurrency' => 5,
             'fulfilled' => function ($r) use (&$results, &$pending) {
                 $results[] = $r;

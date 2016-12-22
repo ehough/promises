@@ -53,7 +53,7 @@ class FunctionsTestGenerator10 extends AbstractSimulatedGenerator
 
         if ($position === 1) {
 
-            $assertEquals('skip', $this->getLastValueSentIn());
+            call_user_func($assertEquals, 'skip', $this->getLastValueSentIn());
             $this->_loopTop = true;
         }
 
@@ -77,14 +77,14 @@ class FunctionsTestGenerator10 extends AbstractSimulatedGenerator
 
                 $this->_value = $this->getLastValueSentIn();
 
-                $assertEquals($this->_value, $this->_promisesIndex);
+                call_user_func($assertEquals, $this->_value, $this->_promisesIndex);
 
                 return array(new FulfilledPromise('skip'));
             }
 
             if ($this->_loopWrap) {
 
-                $assertEquals('skip', $this->getLastValueSentIn());
+                call_user_func($assertEquals, 'skip', $this->getLastValueSentIn());
 
                 $this->_promisesIndex++;
 
@@ -101,7 +101,7 @@ class FunctionsTestGenerator10 extends AbstractSimulatedGenerator
             }
         }
 
-        $assertEquals('skip', $this->getLastValueSentIn());
+        call_user_func($assertEquals, 'skip', $this->getLastValueSentIn());
 
         $this->_reachedLastYield = true;
 

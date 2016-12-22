@@ -32,7 +32,7 @@ class FunctionsTestGenerator7 extends AbstractSimulatedGenerator
             if (!$this->_rejectionExceptionCaught) {
 
                 $cb = $this->_failCallback;
-                $cb('Should have thrown into the coroutine!');
+                call_user_func($cb, 'Should have thrown into the coroutine!');
 
                 throw new \RuntimeException('Should never reach position 1 without catching a RejectionException');
             }
