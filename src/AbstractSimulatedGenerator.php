@@ -51,7 +51,7 @@ abstract class AbstractSimulatedGenerator implements \Iterator
             $this->runToNextYieldStatement();
         }
 
-        return $this->_lastYieldedValue;
+        return $this->getLastYieldedValue();
     }
 
     /**
