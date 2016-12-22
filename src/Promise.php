@@ -141,7 +141,7 @@ class Promise implements PromiseInterface
         $this->handlers = null;
         $this->waitList = $this->waitFn = null;
         $this->cancelFn = null;
-        $callHandler = array(get_class($this), 'callHandler');
+        $callHandler = array(get_class($this), '__callHandler');
 
         if (!$handlers) {
             return;
@@ -182,13 +182,15 @@ class Promise implements PromiseInterface
     /**
      * Call a stack of handlers using a specific callback index and value.
      *
+     * @internal
+     *
      * @param int   $index   1 (resolve) or 2 (reject).
      * @param mixed $value   Value to pass to the callback.
      * @param array $handler Array of handler data (promise and callbacks).
      *
      * @return array Returns the next group to resolve.
      */
-    private static function callHandler($index, $value, array $handler)
+    public static function __callHandler($index, $value, array $handler)
     {
         /** @var PromiseInterface $promise */
         $promise = $handler[0];
