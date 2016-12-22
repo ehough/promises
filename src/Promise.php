@@ -141,7 +141,7 @@ class Promise implements PromiseInterface
         $this->handlers = null;
         $this->waitList = $this->waitFn = null;
         $this->cancelFn = null;
-        $callHandler = array(get_class($this), '__callHandler');
+        $callHandler = get_class($this) . '::__callHandler';
 
         if (!$handlers) {
             return;
