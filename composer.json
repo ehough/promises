@@ -1,7 +1,6 @@
 {
-    "name": "guzzlehttp/promises",
-    "type": "library",
-    "description": "Guzzle promises library",
+    "name": "ehough/promises",
+    "description": "PHP 5.3-compatible fork of guzzle/promises",
     "keywords": ["promise"],
     "license": "MIT",
     "authors": [
@@ -20,17 +19,16 @@
         "php": ">=5.3.29"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.0"
+        "phpunit/phpunit": "^4.0"
     },
     "autoload": {
         "psr-4": {
-            "GuzzleHttp\\Promise\\": "src/"
+            "Hough\\Promise\\": "src/"
         },
         "files": ["src/functions_include.php"]
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        }
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-ci": "vendor/bin/phpunit --coverage-text"
     }
 }

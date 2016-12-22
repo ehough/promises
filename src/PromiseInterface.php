@@ -1,5 +1,5 @@
 <?php
-namespace GuzzleHttp\Promise;
+namespace Hough\Promise;
 
 /**
  * A promise represents the eventual result of an asynchronous operation.
@@ -26,8 +26,8 @@ interface PromiseInterface
      * @return PromiseInterface
      */
     public function then(
-        callable $onFulfilled = null,
-        callable $onRejected = null
+        $onFulfilled = null,
+        $onRejected = null
     );
 
     /**
@@ -40,7 +40,7 @@ interface PromiseInterface
      *
      * @return PromiseInterface
      */
-    public function otherwise(callable $onRejected);
+    public function otherwise($onRejected);
 
     /**
      * Get the state of the promise ("pending", "rejected", or "fulfilled").

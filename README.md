@@ -1,18 +1,23 @@
 # ehough/promises
 
-A PHP 5.3 compatible fork of [Guzzle Promises](https://github.com/guzzle/promises).
+[![Build Status](https://travis-ci.org/guzzle/guzzle-services.svg?branch=develop)](https://travis-ci.org/ehough/promises)
+[![Latest Stable Version](https://poser.pugx.org/ehough/promises/v/stable)](https://packagist.org/packages/ehough/promises)
+[![License](https://poser.pugx.org/ehough/promises/license)](https://packagist.org/packages/ehough/promises)
+
+
+A PHP 5.3-compatible fork of [`guzzle/promises`](https://github.com/guzzle/promises).
 
 # Why?
 
-[35%](https://w3techs.com/technologies/details/pl-php/5/all) of all PHP web servers still (sadly) run PHP 5.3 and lower.
-This library brings [Guzzle Promises](https://github.com/guzzle/promises) to PHP 5.3.29 and up.
+Sadly, [60%](https://w3techs.com/technologies/details/pl-php/5/all) of all PHP web servers still (sadly) run PHP 5.4 and lower, but [`guzzle/psr7`](https://github.com/guzzle/promises) needs PHP 5.5 or higher.
+This fork makes `guzzle/promises` compatible with PHP 5.3.29 through 7.1.
 
 # How to Use This Fork
 
-Usage is identical to [Guzzle Promises](https://github.com/guzzle/promises), except that classes in this library are 
+Usage is identical to [`guzzle/promises`](https://github.com/guzzle/promises), except that the code in this library is 
 namespaced under `Hough\Promise` instead of `GuzzleHttp\Promise`.
 
----
+--- 
 
 [Promises/A+](https://promisesaplus.com/) implementation that handles promise
 chaining and resolution iteratively, allowing for "infinite" promise chaining

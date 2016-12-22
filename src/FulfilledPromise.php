@@ -1,5 +1,5 @@
 <?php
-namespace GuzzleHttp\Promise;
+namespace Hough\Promise;
 
 /**
  * A promise that has been fulfilled.
@@ -22,8 +22,8 @@ class FulfilledPromise implements PromiseInterface
     }
 
     public function then(
-        callable $onFulfilled = null,
-        callable $onRejected = null
+        $onFulfilled = null,
+        $onRejected = null
     ) {
         // Return itself if there is no onFulfilled function.
         if (!$onFulfilled) {
@@ -31,12 +31,13 @@ class FulfilledPromise implements PromiseInterface
         }
 
         $queue = queue();
-        $p = new Promise([$queue, 'run']);
+        $p = new Promise(array($queue, 'run'));
         $value = $this->value;
-        $queue->add(static function () use ($p, $value, $onFulfilled) {
-            if ($p->getState() === self::PENDING) {
+        $pendingState = self::PENDING;
+        $queue->add(function () use ($p, $value, $onFulfilled, $pendingState) {
+            if ($p->getState() === $pendingState) {
                 try {
-                    $p->resolve($onFulfilled($value));
+                    $p->resolve(call_user_func($onFulfilled, $value));
                 } catch (\Throwable $e) {
                     $p->reject($e);
                 } catch (\Exception $e) {
@@ -48,7 +49,7 @@ class FulfilledPromise implements PromiseInterface
         return $p;
     }
 
-    public function otherwise(callable $onRejected)
+    public function otherwise($onRejected)
     {
         return $this->then(null, $onRejected);
     }

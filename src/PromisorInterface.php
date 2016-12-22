@@ -1,5 +1,5 @@
 <?php
-namespace GuzzleHttp\Promise;
+namespace Hough\Promise;
 
 /**
  * Interface used with classes that return a promise.

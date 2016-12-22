@@ -1,5 +1,5 @@
 <?php
-namespace GuzzleHttp\Promise;
+namespace Hough\Promise;
 
 /**
  * Represents a promise that iterates over many promises and invokes
@@ -7,7 +7,7 @@ namespace GuzzleHttp\Promise;
  */
 class EachPromise implements PromisorInterface
 {
-    private $pending = [];
+    private $pending = array();
 
     /** @var \Iterator */
     private $iterable;
@@ -48,7 +48,7 @@ class EachPromise implements PromisorInterface
      * @param mixed    $iterable Promises or values to iterate.
      * @param array    $config   Configuration options
      */
-    public function __construct($iterable, array $config = [])
+    public function __construct($iterable, array $config = array())
     {
         $this->iterable = iter_for($iterable);
 
@@ -87,29 +87,10 @@ class EachPromise implements PromisorInterface
     private function createPromise()
     {
         $this->mutex = false;
-        $this->aggregate = new Promise(function () {
-            reset($this->pending);
-            if (empty($this->pending) && !$this->iterable->valid()) {
-                $this->aggregate->resolve(null);
-                return;
-            }
-
-            // Consume a potentially fluctuating list of promises while
-            // ensuring that indexes are maintained (precluding array_shift).
-            while ($promise = current($this->pending)) {
-                next($this->pending);
-                $promise->wait();
-                if ($this->aggregate->getState() !== PromiseInterface::PENDING) {
-                    return;
-                }
-            }
-        });
+        $this->aggregate = new Promise(array($this, '__closureConsumePromises'));
 
         // Clear the references when the promise is resolved.
-        $clearFn = function () {
-            $this->iterable = $this->concurrency = $this->pending = null;
-            $this->onFulfilled = $this->onRejected = null;
-        };
+        $clearFn = array($this, '__closureClearReferences');
 
         $this->aggregate->then($clearFn, $clearFn);
     }
@@ -151,26 +132,44 @@ class EachPromise implements PromisorInterface
         $promise = promise_for($this->iterable->current());
         $idx = $this->iterable->key();
 
+        $fulfilledCallback = array($this, '__onPendingFulfilled');
+        $rejectedCallback = array($this, '__onPendingRejected');
         $this->pending[$idx] = $promise->then(
-            function ($value) use ($idx) {
-                if ($this->onFulfilled) {
-                    call_user_func(
-                        $this->onFulfilled, $value, $idx, $this->aggregate
-                    );
-                }
-                $this->step($idx);
+            function ($value) use ($idx, $fulfilledCallback) {
+                call_user_func($fulfilledCallback, $value, $idx);
             },
-            function ($reason) use ($idx) {
-                if ($this->onRejected) {
-                    call_user_func(
-                        $this->onRejected, $reason, $idx, $this->aggregate
-                    );
-                }
-                $this->step($idx);
+            function ($reason) use ($idx, $rejectedCallback) {
+                call_user_func($rejectedCallback, $reason, $idx);
             }
         );
 
         return true;
+    }
+
+    /**
+     * @internal
+     */
+    public function __onPendingFulfilled($value, $idx)
+    {
+        if ($this->onFulfilled) {
+            call_user_func(
+                $this->onFulfilled, $value, $idx, $this->aggregate
+            );
+        }
+        $this->step($idx);
+    }
+
+    /**
+     * @internal
+     */
+    public function __onPendingRejected($reason, $idx)
+    {
+        if ($this->onRejected) {
+            call_user_func(
+                $this->onRejected, $reason, $idx, $this->aggregate
+            );
+        }
+        $this->step($idx);
     }
 
     private function advanceIterator()
@@ -225,5 +224,30 @@ class EachPromise implements PromisorInterface
         }
 
         return false;
+    }
+    
+    public function __closureConsumePromises()
+    {
+        reset($this->pending);
+        if (empty($this->pending) && !$this->iterable->valid()) {
+            $this->aggregate->resolve(null);
+            return;
+        }
+
+        // Consume a potentially fluctuating list of promises while
+        // ensuring that indexes are maintained (precluding array_shift).
+        while ($promise = current($this->pending)) {
+            next($this->pending);
+            $promise->wait();
+            if ($this->aggregate->getState() !== PromiseInterface::PENDING) {
+                return;
+            }
+        }
+    }
+    
+    public function __closureClearReferences()
+    {
+        $this->iterable = $this->concurrency = $this->pending = null;
+        $this->onFulfilled = $this->onRejected = null;
     }
 }

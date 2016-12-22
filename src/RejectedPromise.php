@@ -1,5 +1,5 @@
 <?php
-namespace GuzzleHttp\Promise;
+namespace Hough\Promise;
 
 /**
  * A promise that has been rejected.
@@ -22,8 +22,8 @@ class RejectedPromise implements PromiseInterface
     }
 
     public function then(
-        callable $onFulfilled = null,
-        callable $onRejected = null
+        $onFulfilled = null,
+        $onRejected = null
     ) {
         // If there's no onRejected callback then just return self.
         if (!$onRejected) {
@@ -32,12 +32,13 @@ class RejectedPromise implements PromiseInterface
 
         $queue = queue();
         $reason = $this->reason;
-        $p = new Promise([$queue, 'run']);
-        $queue->add(static function () use ($p, $reason, $onRejected) {
-            if ($p->getState() === self::PENDING) {
+        $p = new Promise(array($queue, 'run'));
+        $pendingStatus = self::PENDING;
+        $queue->add(function () use ($p, $reason, $onRejected, $pendingStatus) {
+            if ($p->getState() === $pendingStatus) {
                 try {
                     // Return a resolved promise if onRejected does not throw.
-                    $p->resolve($onRejected($reason));
+                    $p->resolve(call_user_func($onRejected, $reason));
                 } catch (\Throwable $e) {
                     // onRejected threw, so return a rejected promise.
                     $p->reject($e);
@@ -51,7 +52,7 @@ class RejectedPromise implements PromiseInterface
         return $p;
     }
 
-    public function otherwise(callable $onRejected)
+    public function otherwise($onRejected)
     {
         return $this->then(null, $onRejected);
     }

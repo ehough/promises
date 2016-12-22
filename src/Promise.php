@@ -1,5 +1,5 @@
 <?php
-namespace GuzzleHttp\Promise;
+namespace Hough\Promise;
 
 /**
  * Promises/A+ implementation that avoids recursion when possible.
@@ -13,27 +13,27 @@ class Promise implements PromiseInterface
     private $cancelFn;
     private $waitFn;
     private $waitList;
-    private $handlers = [];
+    private $handlers = array();
 
     /**
      * @param callable $waitFn   Fn that when invoked resolves the promise.
      * @param callable $cancelFn Fn that when invoked cancels the promise.
      */
     public function __construct(
-        callable $waitFn = null,
-        callable $cancelFn = null
+        $waitFn = null,
+        $cancelFn = null
     ) {
         $this->waitFn = $waitFn;
         $this->cancelFn = $cancelFn;
     }
 
     public function then(
-        callable $onFulfilled = null,
-        callable $onRejected = null
+        $onFulfilled = null,
+        $onRejected = null
     ) {
         if ($this->state === self::PENDING) {
-            $p = new Promise(null, [$this, 'cancel']);
-            $this->handlers[] = [$p, $onFulfilled, $onRejected];
+            $p = new Promise(null, array($this, 'cancel'));
+            $this->handlers[] = array($p, $onFulfilled, $onRejected);
             $p->waitList = $this->waitList;
             $p->waitList[] = $this;
             return $p;
@@ -52,7 +52,7 @@ class Promise implements PromiseInterface
         return $onRejected ? $rejection->then(null, $onRejected) : $rejection;
     }
 
-    public function otherwise(callable $onRejected)
+    public function otherwise($onRejected)
     {
         return $this->then(null, $onRejected);
     }
@@ -94,7 +94,7 @@ class Promise implements PromiseInterface
             $fn = $this->cancelFn;
             $this->cancelFn = null;
             try {
-                $fn();
+                call_user_func($fn);
             } catch (\Throwable $e) {
                 $this->reject($e);
             } catch (\Exception $e) {
@@ -141,6 +141,7 @@ class Promise implements PromiseInterface
         $this->handlers = null;
         $this->waitList = $this->waitFn = null;
         $this->cancelFn = null;
+        $callHandler = array(get_class($this), '__callHandler');
 
         if (!$handlers) {
             return;
@@ -151,9 +152,9 @@ class Promise implements PromiseInterface
         if (!method_exists($value, 'then')) {
             $id = $state === self::FULFILLED ? 1 : 2;
             // It's a success, so resolve the handlers in the queue.
-            queue()->add(static function () use ($id, $value, $handlers) {
+            queue()->add(function () use ($id, $value, $handlers, $callHandler) {
                 foreach ($handlers as $handler) {
-                    self::callHandler($id, $value, $handler);
+                    call_user_func($callHandler, $id, $value, $handler);
                 }
             });
         } elseif ($value instanceof Promise
@@ -164,14 +165,14 @@ class Promise implements PromiseInterface
         } else {
             // Resolve the handlers when the forwarded promise is resolved.
             $value->then(
-                static function ($value) use ($handlers) {
+                function ($value) use ($handlers, $callHandler) {
                     foreach ($handlers as $handler) {
-                        self::callHandler(1, $value, $handler);
+                        call_user_func($callHandler, 1, $value, $handler);
                     }
                 },
-                static function ($reason) use ($handlers) {
+                function ($reason) use ($handlers, $callHandler) {
                     foreach ($handlers as $handler) {
-                        self::callHandler(2, $reason, $handler);
+                        call_user_func($callHandler, 2, $reason, $handler);
                     }
                 }
             );
@@ -181,13 +182,15 @@ class Promise implements PromiseInterface
     /**
      * Call a stack of handlers using a specific callback index and value.
      *
+     * @internal
+     *
      * @param int   $index   1 (resolve) or 2 (reject).
      * @param mixed $value   Value to pass to the callback.
      * @param array $handler Array of handler data (promise and callbacks).
      *
      * @return array Returns the next group to resolve.
      */
-    private static function callHandler($index, $value, array $handler)
+    public static function __callHandler($index, $value, array $handler)
     {
         /** @var PromiseInterface $promise */
         $promise = $handler[0];
@@ -200,7 +203,7 @@ class Promise implements PromiseInterface
 
         try {
             if (isset($handler[$index])) {
-                $promise->resolve($handler[$index]($value));
+                $promise->resolve(call_user_func($handler[$index], $value));
             } elseif ($index === 1) {
                 // Forward resolution values as-is.
                 $promise->resolve($value);
@@ -243,7 +246,7 @@ class Promise implements PromiseInterface
         try {
             $wfn = $this->waitFn;
             $this->waitFn = null;
-            $wfn(true);
+            call_user_func($wfn, true);
         } catch (\Exception $reason) {
             if ($this->state === self::PENDING) {
                 // The promise has not been resolved yet, so reject the promise
@@ -263,10 +266,17 @@ class Promise implements PromiseInterface
         $this->waitList = null;
 
         foreach ($waitList as $result) {
-            $result->waitIfPending();
-            while ($result->result instanceof Promise) {
-                $result = $result->result;
+            while (true) {
                 $result->waitIfPending();
+
+                if ($result->result instanceof Promise) {
+                    $result = $result->result;
+                } else {
+                    if ($result->result instanceof PromiseInterface) {
+                        $result->result->wait(false);
+                    }
+                    break;
+                }
             }
         }
     }

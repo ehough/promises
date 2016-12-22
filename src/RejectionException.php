@@ -1,5 +1,5 @@
 <?php
-namespace GuzzleHttp\Promise;
+namespace Hough\Promise;
 
 /**
  * A special exception that is thrown when waiting on a rejected promise.
@@ -27,9 +27,19 @@ class RejectionException extends \RuntimeException
             || (is_object($reason) && method_exists($reason, '__toString'))
         ) {
             $message .= ' with reason: ' . $this->reason;
-        } elseif ($reason instanceof \JsonSerializable) {
-            $message .= ' with reason: '
+        } elseif ($this->_isJsonSerializable($reason)) {
+
+            if (version_compare(PHP_VERSION, '5.4', '>=')) {
+
+                $message .= ' with reason: '
                 . json_encode($this->reason, JSON_PRETTY_PRINT);
+
+            } else {
+
+                $message .= ' with reason: '
+                . json_encode($this->reason);
+            }
+
         }
 
         parent::__construct($message);
@@ -43,5 +53,22 @@ class RejectionException extends \RuntimeException
     public function getReason()
     {
         return $this->reason;
+    }
+
+    private function _isJsonSerializable($candidate)
+    {
+        if (interface_exists('JsonSerializable') && is_subclass_of($candidate, 'JsonSerializable')) {
+
+            return true;
+        }
+
+        if (!is_object($candidate)) {
+
+            return false;
+        }
+
+        $ref = new \ReflectionClass(get_class($candidate));
+
+        return $ref->hasMethod('jsonSerialize');
     }
 }

@@ -1,11 +1,11 @@
 <?php
 namespace GuzzleHttp\Tests\Promise;
 
-use GuzzleHttp\Promise\Promise;
-use GuzzleHttp\Promise\FulfilledPromise;
+use Hough\Promise\Promise;
+use Hough\Promise\FulfilledPromise;
 
 /**
- * @covers GuzzleHttp\Promise\FulfilledPromise
+ * @covers Hough\Promise\FulfilledPromise
  */
 class FulfilledPromiseTest extends \PHPUnit_Framework_TestCase
 {
@@ -72,7 +72,7 @@ class FulfilledPromiseTest extends \PHPUnit_Framework_TestCase
         $p2 = $p->then($f);
         $this->assertNotSame($p, $p2);
         $this->assertNull($r);
-        \GuzzleHttp\Promise\queue()->run();
+        \Hough\Promise\queue()->run();
         $this->assertEquals('a', $r);
     }
 

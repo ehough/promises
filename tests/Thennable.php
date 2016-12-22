@@ -1,7 +1,7 @@
 <?php
-namespace GuzzleHttp\Promise\Tests;
+namespace Hough\Promise\Tests;
 
-use GuzzleHttp\Promise\Promise;
+use Hough\Promise\Promise;
 
 class Thennable
 {
@@ -12,7 +12,7 @@ class Thennable
         $this->nextPromise = new Promise();
     }
 
-    public function then(callable $res = null, callable $rej = null)
+    public function then($res = null, $rej = null)
     {
         return $this->nextPromise->then($res, $rej);
     }

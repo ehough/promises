@@ -1,5 +1,5 @@
 <?php
-namespace GuzzleHttp\Promise;
+namespace Hough\Promise;
 
 use Exception;
 use Generator;
@@ -16,7 +16,7 @@ use Throwable;
  * This can lead to less verbose code when doing lots of sequential async calls
  * with minimal processing in between.
  *
- *     use GuzzleHttp\Promise;
+ *     use Hough\Promise;
  *
  *     function createPromise($value) {
  *         return new Promise\FulfilledPromise($value);
@@ -57,25 +57,28 @@ final class Coroutine implements PromiseInterface
      */
     private $result;
 
-    public function __construct(callable $generatorFn)
+    public function __construct($generatorFn)
     {
-        $this->generator = $generatorFn();
-        $this->result = new Promise(function () {
-            while (isset($this->currentPromise)) {
-                $this->currentPromise->wait();
-            }
-        });
+        $this->generator = call_user_func($generatorFn);
+        $this->result = new Promise(array($this, '__closureWaitForCurrentPromise'));
         $this->nextCoroutine($this->generator->current());
     }
 
+    public function __closureWaitForCurrentPromise()
+    {
+        while (isset($this->currentPromise)) {
+            $this->currentPromise->wait();
+        }
+    }
+
     public function then(
-        callable $onFulfilled = null,
-        callable $onRejected = null
+        $onFulfilled = null,
+        $onRejected = null
     ) {
         return $this->result->then($onFulfilled, $onRejected);
     }
 
-    public function otherwise(callable $onRejected)
+    public function otherwise($onRejected)
     {
         return $this->result->otherwise($onRejected);
     }
@@ -109,7 +112,7 @@ final class Coroutine implements PromiseInterface
     private function nextCoroutine($yielded)
     {
         $this->currentPromise = promise_for($yielded)
-            ->then([$this, '_handleSuccess'], [$this, '_handleFailure']);
+            ->then(array($this, '_handleSuccess'), array($this, '_handleFailure'));
     }
 
     /**

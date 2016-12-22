@@ -1,7 +1,7 @@
 <?php
-namespace GuzzleHttp\Promise\Test;
+namespace Hough\Promise\Test;
 
-use GuzzleHttp\Promise\TaskQueue;
+use Hough\Promise\TaskQueue;
 
 class TaskQueueTest extends \PHPUnit_Framework_TestCase
 {
@@ -21,11 +21,11 @@ class TaskQueueTest extends \PHPUnit_Framework_TestCase
     public function testExecutesTasksInOrder()
     {
         $tq = new TaskQueue(false);
-        $called = [];
+        $called = array();
         $tq->add(function () use (&$called) { $called[] = 'a'; });
         $tq->add(function () use (&$called) { $called[] = 'b'; });
         $tq->add(function () use (&$called) { $called[] = 'c'; });
         $tq->run();
-        $this->assertEquals(['a', 'b', 'c'], $called);
+        $this->assertEquals(array('a', 'b', 'c'), $called);
     }
 }

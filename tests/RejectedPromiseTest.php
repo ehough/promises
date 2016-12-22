@@ -1,11 +1,11 @@
 <?php
-namespace GuzzleHttp\Promise\Tests;
+namespace Hough\Promise\Tests;
 
-use GuzzleHttp\Promise\Promise;
-use GuzzleHttp\Promise\RejectedPromise;
+use Hough\Promise\Promise;
+use Hough\Promise\RejectedPromise;
 
 /**
- * @covers GuzzleHttp\Promise\RejectedPromise
+ * @covers Hough\Promise\RejectedPromise
  */
 class RejectedPromiseTest extends \PHPUnit_Framework_TestCase
 {
@@ -88,7 +88,7 @@ class RejectedPromiseTest extends \PHPUnit_Framework_TestCase
         $f = function ($reason) use (&$r) { $r = $reason; };
         $p->then(null, $f);
         $this->assertNull($r);
-        \GuzzleHttp\Promise\queue()->run();
+        \Hough\Promise\queue()->run();
         $this->assertEquals('a', $r);
     }
 
@@ -116,7 +116,7 @@ class RejectedPromiseTest extends \PHPUnit_Framework_TestCase
     {
         $p = new RejectedPromise('foo');
         $p->otherwise(function ($v) use (&$c) { $c = $v; });
-        \GuzzleHttp\Promise\queue()->run();
+        \Hough\Promise\queue()->run();
         $this->assertSame('foo', $c);
     }
 
@@ -129,7 +129,7 @@ class RejectedPromiseTest extends \PHPUnit_Framework_TestCase
         })->then(function ($v) use (&$actual) {
             $actual = $v;
         });
-        \GuzzleHttp\Promise\queue()->run();
+        \Hough\Promise\queue()->run();
         $this->assertEquals('foo bar', $actual);
     }
 
