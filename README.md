@@ -10,8 +10,8 @@ A PHP 5.3 compatible fork of [Guzzle Promises](https://github.com/guzzle/promise
 
 # Why?
 
-[35%](https://w3techs.com/technologies/details/pl-php/5/all) of all PHP web servers still (sadly) run PHP 5.3 and lower.
-This library brings [Guzzle Promises](https://github.com/guzzle/promises) to PHP 5.3.29 and up.
+[35%](https://w3techs.com/technologies/details/pl-php/5/all) of all PHP web servers still (sadly) run PHP 5.3 and lower, but Guzzle Promises needs PHP 5.5 or higher.
+This fork makes [Guzzle Promises](https://github.com/guzzle/promises) compatible with PHP 5.3.29 through 7.1.
 
 # How to Use This Fork
 
