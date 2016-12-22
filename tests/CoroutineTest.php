@@ -2,6 +2,7 @@
 namespace Hough\Promise\Tests;
 
 use Hough\Promise\Coroutine;
+use Hough\Promise\Promise;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -63,4 +64,33 @@ class CoroutineTest extends PHPUnit_Framework_TestCase
 
         $coroutine->cancel();
     }
+
+    public function testWaitShouldResolveChainedCoroutines()
+    {
+        $promisor = function () {
+            return \Hough\Promise\coroutine(new CoroutineTestGenerator1());
+        };
+
+        $promise = $promisor()->then($promisor)->then($promisor);
+
+        $this->assertSame(1, $promise->wait());
+    }
+
+    public function testWaitShouldHandleIntermediateErrors()
+    {
+        $fail = array($this, 'fail');
+        $promise = \Hough\Promise\coroutine(new CoroutineTestGenerator1())
+            ->then(function () {
+                return \Hough\Promise\coroutine(new CoroutineTestGenerator2());
+            })
+            ->otherwise(function (\Exception $error = null) use ($fail) {
+                if (!$error) {
+                    call_user_func($fail, 'Error did not propagate.');
+                }
+                return 3;
+            });
+        $this->assertSame(3, $promise->wait());
+    }
+
+
 }
