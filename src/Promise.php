@@ -152,7 +152,7 @@ class Promise implements PromiseInterface
         if (!method_exists($value, 'then')) {
             $id = $state === self::FULFILLED ? 1 : 2;
             // It's a success, so resolve the handlers in the queue.
-            queue()->add(static function () use ($id, $value, $handlers, $callHandler) {
+            queue()->add(function () use ($id, $value, $handlers, $callHandler) {
                 foreach ($handlers as $handler) {
                     call_user_func($callHandler, $id, $value, $handler);
                 }
@@ -165,12 +165,12 @@ class Promise implements PromiseInterface
         } else {
             // Resolve the handlers when the forwarded promise is resolved.
             $value->then(
-                static function ($value) use ($handlers, $callHandler) {
+                function ($value) use ($handlers, $callHandler) {
                     foreach ($handlers as $handler) {
                         call_user_func($callHandler, 1, $value, $handler);
                     }
                 },
-                static function ($reason) use ($handlers, $callHandler) {
+                function ($reason) use ($handlers, $callHandler) {
                     foreach ($handlers as $handler) {
                         call_user_func($callHandler, 2, $reason, $handler);
                     }
