@@ -45,7 +45,7 @@ function task($task)
     $promise = new Promise(array($queue, 'run'));
     $queue->add(function () use ($task, $promise) {
         try {
-            $promise->resolve($task());
+            $promise->resolve(call_user_func($task));
         } catch (\Throwable $e) {
             $promise->reject($e);
         } catch (\Exception $e) {

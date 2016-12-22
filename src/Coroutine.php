@@ -59,7 +59,7 @@ final class Coroutine implements PromiseInterface
 
     public function __construct($generatorFn)
     {
-        $this->generator = $generatorFn();
+        $this->generator = call_user_func($generatorFn);
         $this->result = new Promise(array($this, '__closureWaitForCurrentPromise'));
         $this->nextCoroutine($this->generator->current());
     }

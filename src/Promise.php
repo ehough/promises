@@ -94,7 +94,7 @@ class Promise implements PromiseInterface
             $fn = $this->cancelFn;
             $this->cancelFn = null;
             try {
-                $fn();
+                call_user_func($fn);
             } catch (\Throwable $e) {
                 $this->reject($e);
             } catch (\Exception $e) {
