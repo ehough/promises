@@ -141,6 +141,7 @@ class Promise implements PromiseInterface
         $this->handlers = null;
         $this->waitList = $this->waitFn = null;
         $this->cancelFn = null;
+        $callHandler = array(get_class($this), 'callHandler');
 
         if (!$handlers) {
             return;
@@ -151,9 +152,9 @@ class Promise implements PromiseInterface
         if (!method_exists($value, 'then')) {
             $id = $state === self::FULFILLED ? 1 : 2;
             // It's a success, so resolve the handlers in the queue.
-            queue()->add(static function () use ($id, $value, $handlers) {
+            queue()->add(static function () use ($id, $value, $handlers, $callHandler) {
                 foreach ($handlers as $handler) {
-                    self::callHandler($id, $value, $handler);
+                    call_user_func($callHandler, $id, $value, $handler);
                 }
             });
         } elseif ($value instanceof Promise
@@ -164,14 +165,14 @@ class Promise implements PromiseInterface
         } else {
             // Resolve the handlers when the forwarded promise is resolved.
             $value->then(
-                static function ($value) use ($handlers) {
+                static function ($value) use ($handlers, $callHandler) {
                     foreach ($handlers as $handler) {
-                        self::callHandler(1, $value, $handler);
+                        call_user_func($callHandler, 1, $value, $handler);
                     }
                 },
-                static function ($reason) use ($handlers) {
+                static function ($reason) use ($handlers, $callHandler) {
                     foreach ($handlers as $handler) {
-                        self::callHandler(2, $reason, $handler);
+                        call_user_func($callHandler, 2, $reason, $handler);
                     }
                 }
             );
