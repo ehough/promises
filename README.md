@@ -9,7 +9,7 @@ A PHP 5.3-compatible fork of [`guzzle/promises`](https://github.com/guzzle/promi
 
 # Why?
 
-Sadly, [60%](https://w3techs.com/technologies/details/pl-php/5/all) of all PHP web servers still (sadly) run PHP 5.4 and lower, but [`guzzle/psr7`](https://github.com/guzzle/promises) needs PHP 5.5 or higher.
+Sadly, [60%](https://w3techs.com/technologies/details/pl-php/5/all) of all PHP web servers still run PHP 5.4 and lower, but [`guzzle/psr7`](https://github.com/guzzle/promises) needs PHP 5.5 or higher.
 This fork makes `guzzle/promises` compatible with PHP 5.3.29 through 7.1.
 
 # How to Use This Fork
