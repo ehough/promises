@@ -1,12 +1,12 @@
 <?php
 namespace Hough\Promise\Tests;
 
-use Hough\Promise\AbstractSimulatedGenerator;
+use Hough\Generators\AbstractGenerator;
 use Hough\Promise\FulfilledPromise;
 use Hough\Promise\RejectedPromise;
 use Hough\Promise\RejectionException;
 
-class FunctionsTestGenerator2 extends AbstractSimulatedGenerator
+class FunctionsTestGenerator2 extends AbstractGenerator
 {
     private $_failCallback;
 
@@ -22,7 +22,7 @@ class FunctionsTestGenerator2 extends AbstractSimulatedGenerator
      *
      * @return null|mixed
      */
-    protected function executePosition($position)
+    protected function resume($position)
     {
         switch ($position) {
 

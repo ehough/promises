@@ -8,7 +8,7 @@ use Hough\Promise\RejectedPromise;
 use Hough\Promise\RejectionException;
 
 /**
- * @covers Hough\Promise\Promise
+ * @covers \Hough\Promise\Promise
  */
 class PromiseTest extends \PHPUnit_Framework_TestCase
 {

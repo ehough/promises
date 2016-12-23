@@ -1,6 +1,7 @@
 <?php
 namespace Hough\Promise\Tests;
 
+use Hough\Generators\ArrayPoppingGenerator;
 use Hough\Promise\RejectedPromise;
 use Hough\Promise\FulfilledPromise;
 use Hough\Promise\Promise;
@@ -9,7 +10,7 @@ use Hough\Promise\EachPromise;
 use Hough\Promise as P;
 
 /**
- * @covers Hough\Promise\EachPromise
+ * @covers \Hough\Promise\EachPromise
  */
 class EachPromiseTest extends \PHPUnit_Framework_TestCase
 {

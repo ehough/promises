@@ -25,7 +25,7 @@ class Thing2
 }
 
 /**
- * @covers Hough\Promise\RejectionException
+ * @covers \Hough\Promise\RejectionException
  */
 class RejectionExceptionTest extends \PHPUnit_Framework_TestCase
 {

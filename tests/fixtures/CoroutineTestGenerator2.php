@@ -1,17 +1,17 @@
 <?php
 namespace Hough\Promise\Tests;
 
-use Hough\Promise\AbstractSimulatedGenerator;
+use Hough\Generators\AbstractGenerator;
 use Hough\Promise\Promise;
 
-class CoroutineTestGenerator2 extends AbstractSimulatedGenerator
+class CoroutineTestGenerator2 extends AbstractGenerator
 {
     /**
      * @param int $position
      *
      * @return null|mixed
      */
-    protected function executePosition($position)
+    protected function resume($position)
     {
         if ($position === 1) {
 
