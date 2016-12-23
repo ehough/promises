@@ -1,12 +1,12 @@
 <?php
 namespace Hough\Promise\Tests;
 
-use Hough\Promise\AbstractSimulatedGenerator;
+use Hough\Generators\AbstractGenerator;
 use Hough\Promise\FulfilledPromise;
 use Hough\Promise\RejectedPromise;
 use Hough\Promise\RejectionException;
 
-class FunctionsTestGenerator14 extends AbstractSimulatedGenerator
+class FunctionsTestGenerator14 extends AbstractGenerator
 {
     private $_p1;
     private $_p2;
@@ -31,7 +31,7 @@ class FunctionsTestGenerator14 extends AbstractSimulatedGenerator
         $this->_exception2Caught = false;
     }
 
-    public function executePosition($position)
+    public function resume($position)
     {
         if ($position === 6) {
 

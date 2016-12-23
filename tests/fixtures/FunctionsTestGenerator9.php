@@ -1,18 +1,18 @@
 <?php
 namespace Hough\Promise\Tests;
 
-use Hough\Promise\AbstractSimulatedGenerator;
+use Hough\Generators\AbstractGenerator;
 use Hough\Promise\FulfilledPromise;
 use Hough\Promise\RejectedPromise;
 use Hough\Promise\RejectionException;
 
-class FunctionsTestGenerator9 extends AbstractSimulatedGenerator
+class FunctionsTestGenerator9 extends AbstractGenerator
 {
     private $_value = 0;
 
     private $_exceptionCaught = false;
 
-    public function executePosition($position)
+    public function resume($position)
     {
         if ($position === 1002) {
 

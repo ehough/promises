@@ -1,8 +1,8 @@
 <?php
 namespace Hough\Promise\Tests;
 
+use Hough\Generators\ArrayGenerator;
 use Hough\Promise\Coroutine;
-use Hough\Promise\Promise;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 

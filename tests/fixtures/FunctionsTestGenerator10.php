@@ -1,12 +1,12 @@
 <?php
 namespace Hough\Promise\Tests;
 
-use Hough\Promise\AbstractSimulatedGenerator;
+use Hough\Generators\AbstractGenerator;
 use Hough\Promise\FulfilledPromise;
 use Hough\Promise\RejectedPromise;
 use Hough\Promise\RejectionException;
 
-class FunctionsTestGenerator10 extends AbstractSimulatedGenerator
+class FunctionsTestGenerator10 extends AbstractGenerator
 {
     private $_value;
 
@@ -30,7 +30,7 @@ class FunctionsTestGenerator10 extends AbstractSimulatedGenerator
         $this->_assertEquals = $assertEquals;
     }
 
-    public function executePosition($position)
+    public function resume($position)
     {
         if ($this->_reachedLastYield) {
 

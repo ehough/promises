@@ -1,12 +1,12 @@
 <?php
 namespace Hough\Promise\Tests;
 
-use Hough\Promise\AbstractSimulatedGenerator;
+use Hough\Generators\AbstractGenerator;
 use Hough\Promise\FulfilledPromise;
 use Hough\Promise\RejectedPromise;
 use Hough\Promise\RejectionException;
 
-class FunctionsTestGenerator12 extends AbstractSimulatedGenerator
+class FunctionsTestGenerator12 extends AbstractGenerator
 {
     private $_promises;
 
@@ -30,7 +30,7 @@ class FunctionsTestGenerator12 extends AbstractSimulatedGenerator
         $this->_done            = false;
     }
 
-    public function executePosition($position)
+    public function resume($position)
     {
         if ($this->_forLoopIndex === 21) {
 

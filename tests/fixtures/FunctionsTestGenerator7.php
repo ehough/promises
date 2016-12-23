@@ -1,11 +1,11 @@
 <?php
 namespace Hough\Promise\Tests;
 
-use Hough\Promise\AbstractSimulatedGenerator;
+use Hough\Generators\AbstractGenerator;
 use Hough\Promise\RejectedPromise;
 use Hough\Promise\RejectionException;
 
-class FunctionsTestGenerator7 extends AbstractSimulatedGenerator
+class FunctionsTestGenerator7 extends AbstractGenerator
 {
     private $_failCallback;
 
@@ -20,7 +20,7 @@ class FunctionsTestGenerator7 extends AbstractSimulatedGenerator
         $this->_rejectionExceptionCaught = false;
     }
 
-    public function executePosition($position)
+    public function resume($position)
     {
         if ($position === 0) {
 

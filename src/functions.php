@@ -169,7 +169,7 @@ function inspect(PromiseInterface $promise)
  * @param PromiseInterface[] $promises Traversable of promises to wait upon.
  *
  * @return array
- * @see Hough\Promise\inspect for the inspection state array format.
+ * @see \Hough\Promise\inspect for the inspection state array format.
  */
 function inspect_all($promises)
 {
@@ -304,7 +304,7 @@ function any($promises)
  * @param mixed $promises Promises or values.
  *
  * @return PromiseInterface
- * @see Hough\Promise\inspect for the inspection state array format.
+ * @see \Hough\Promise\inspect for the inspection state array format.
  */
 function settle($promises)
 {

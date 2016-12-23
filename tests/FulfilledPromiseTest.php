@@ -5,7 +5,7 @@ use Hough\Promise\Promise;
 use Hough\Promise\FulfilledPromise;
 
 /**
- * @covers Hough\Promise\FulfilledPromise
+ * @covers \Hough\Promise\FulfilledPromise
  */
 class FulfilledPromiseTest extends \PHPUnit_Framework_TestCase
 {

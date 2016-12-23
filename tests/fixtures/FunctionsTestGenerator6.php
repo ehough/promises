@@ -1,10 +1,10 @@
 <?php
 namespace Hough\Promise\Tests;
 
-use Hough\Promise\AbstractSimulatedGenerator;
+use Hough\Generators\AbstractGenerator;
 use Hough\Promise\RejectedPromise;
 
-class FunctionsTestGenerator6 extends AbstractSimulatedGenerator
+class FunctionsTestGenerator6 extends AbstractGenerator
 {
     private $_failCallback;
 
@@ -13,7 +13,7 @@ class FunctionsTestGenerator6 extends AbstractSimulatedGenerator
         $this->_failCallback = $failCallback;
     }
 
-    public function executePosition($position)
+    public function resume($position)
     {
         if ($position === 1) {
 

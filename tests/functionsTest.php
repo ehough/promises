@@ -1,6 +1,7 @@
 <?php
 namespace Hough\Promise\Tests;
 
+use Hough\Generators\ArrayGenerator;
 use Hough\Promise as P;
 use Hough\Promise\FulfilledPromise;
 use Hough\Promise\Promise;

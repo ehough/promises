@@ -1,9 +1,9 @@
 <?php
 namespace Hough\Promise\Tests;
 
-use Hough\Promise\AbstractSimulatedGenerator;
+use Hough\Generators\AbstractGenerator;
 
-class EachPromiseTestGenerator2 extends AbstractSimulatedGenerator
+class EachPromiseTestGenerator2 extends AbstractGenerator
 {
     private $_promises;
 
@@ -20,7 +20,7 @@ class EachPromiseTestGenerator2 extends AbstractSimulatedGenerator
      *
      * @return null|mixed
      */
-    protected function executePosition($position)
+    protected function resume($position)
     {
         if ($position === count($this->_promises)) {
 

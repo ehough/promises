@@ -1,11 +1,11 @@
 <?php
 namespace Hough\Promise\Tests;
 
-use Hough\Promise\AbstractSimulatedGenerator;
+use Hough\Generators\AbstractGenerator;
 
-class EachPromiseTestGenerator1 extends AbstractSimulatedGenerator
+class EachPromiseTestGenerator1 extends AbstractGenerator
 {
-    public function executePosition($position)
+    public function resume($position)
     {
         if ($position === 2) {
 

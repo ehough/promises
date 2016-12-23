@@ -5,7 +5,7 @@ use Hough\Promise\Promise;
 use Hough\Promise\RejectedPromise;
 
 /**
- * @covers Hough\Promise\RejectedPromise
+ * @covers \Hough\Promise\RejectedPromise
  */
 class RejectedPromiseTest extends \PHPUnit_Framework_TestCase
 {
